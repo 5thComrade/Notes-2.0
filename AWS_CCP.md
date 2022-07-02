@@ -197,6 +197,21 @@ Dedicated Hosts:
 - Useful for software that have a complicated licensing model (Bring your own License)
 - Or for a companies that have strong regulatory or compliance needs
 
+**AMI Overview**  
+Amazon Machine Image is what allows the customization of an EC2 instance.  
+You can launch EC2 instances from:
+
+- A public AMI: AWS Provided
+- Your own AMI: you make and maintain them yourself
+- An AWS Marketplace AMI: an AMI someone else made
+
+You could launch an EC2 instance using an AMI, customize it even further, create a customized AMI from that instance and launch another instance using the customized AMI. This helps the user avoid doing the same customizations multiple times in multiple instances.
+
+**EC2 Image Builder**  
+Used to automate the creation of Virtual Machines or Container Images.  
+ie: automate the creation, maintenance, validation and testing of EC2 AMI's  
+EC2 image builder launches a Builder EC2 Instance, create a new AMI, launches a Test EC2 Instance and test the AMI, AMI is distributed to multiple regions.
+
 **EC2 Shared Responsibility Model**  
 AWS is responsible for infrastructure, replacing faulty hardware, compliance validation
 User is responsible for security groups rules, operating-system patches and updates, software and utilities installed on the EC2 instance, IAM roles assigned to the ec2 instance, data security on your instance.
@@ -204,3 +219,49 @@ User is responsible for security groups rules, operating-system patches and upda
 ---
 
 ### **EC2 - Storage**
+
+> Various storage options for EC2 instances
+
+Options for an EC2 instance to store data
+
+- Elastic Block Store (EBS) Volumes
+- EC2 Instance Store
+- Elastic File System (EFS)
+- EFS Infrequent Access (EFS-IA)
+- S3
+- Amazon FSx
+
+**EBS - Elastic Block Store**
+
+- Is a network drive you can attach to your instances while they run.
+- It allows your instances to persist data, even after their termination.
+- They can only be mounted to one instance at a time.
+- It uses the network to communicate with the instance, which means there might be a bit of latency.
+- It can be detached from an EC2 instance and attached to another one quickly
+- Its locked to an Availability Zone, to move a volume you need to take a snapshot of it
+- One needs to provision the EBS Volume beforehand by telling how many Gbs and IOPS(Input Output per second) one needs.
+
+When an EC2 instance is created, the user is prompted with a choice related to the EBS Volume,
+"Delete on Termination" if one checks this box, the EBS Volume attached to the EC2 instance will get deleted once the instance is terminated.  
+The root volume attached to the instance has the delete on termination selected by default, however if you attach additional ebs volumes apart from the root volume, they are not deleted when the instance is terminated.
+
+EBS Volume Types:
+
+- GP2 (SSD): General purpose SSD volume that balances price and performance for a wide variety of workloads
+  - Recommended for most workloads
+  - Low-latency interactive apps
+  - Development and test environments
+- IO1 (SSD): Highest-performance SSD volume for mission-critical low-latency or high- throughput workloads
+  - Critical business applications that require sustained IOPS performance
+  - Large database workloads, such as: MongoDB, Cassandra, Microsoft SQL Server, MySQL, PostgreSQL, Oracle
+- ST1 (HDD): Low cost HDD volume designed for frequently accessed, throughput- intensive workloads
+  - Streaming workloads requiring consistent, fast throughput at a low price.
+  - Big data, Data warehouses, Log processing
+- SC1 (HDD): Lowest cost HDD volume designed for less frequently accessed workloads
+  - Throughput-oriented storage for large volumes of data that is infrequently accessed
+  - Scenarios where the lowest storage cost is important
+
+EBS Volumes are characterized in Size | Throughput | IOPS  
+Only GP2 and IO1 can be used as instance boot volumes
+
+EBS Snapshots
