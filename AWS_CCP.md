@@ -264,4 +264,90 @@ EBS Volume Types:
 EBS Volumes are characterized in Size | Throughput | IOPS  
 Only GP2 and IO1 can be used as instance boot volumes
 
-EBS Snapshots
+EBS Snapshots  
+EBS Volumes can be backed up using “snapshots”  
+If you snapshot a 100GB drive that only has 5GB of data, then your EBS snapshot will only be 5GB.
+
+Snapshots are used for:
+
+- Backups: ensuring you can save your data in case of catastrophe
+- Volume migration
+  - Resizing a volume down
+  - Changing the volume type
+  - Encrypt a volume
+  - Move snapshot to a different region/AZ
+
+EBS Encryption  
+When you create an encrypted EBS volume, you get the following:
+
+- Data at rest is encrypted inside the volume
+- All the data in flight moving between the instance and the volume is encrypted
+- All snapshots are encrypted
+- All volumes created from the snapshots are encrypted
+
+**EC2 Instance Store**
+
+EBS volumes are network drives with good but "limited" performance. If you need a high-performance hardware disk, use EC2 Instance Store.  
+Instance store is physically attached to the machine.
+
+Pros:
+
+- Better I/O performance
+
+Cons:
+
+- On termination, the instance store is lost
+- You can’t resize the instance store
+
+**EFS - Elastic File System**
+
+This is a Network File System(NFS) that can be mounted on 100s of EC2 instances.  
+EFS drives can be mounted to multiple instances in various availability zones.
+
+**EFS Infrequent Access (EFS-IA)**
+
+Storage class that is cost-optimized for files not accessed every day.  
+Up to 92% lower cost compared to EFS Standard  
+EFS will automatically move your files to EFS-IA based on the last time the file was accessed if you enable EFS-IA with a lifecycle policy.
+
+**Amazon FSx**
+
+Launch 3rd party high-performance file systems on AWS  
+Fully Managed Service  
+3 options:
+
+- FSx for Lustre, a fully managed, high-performance, scalable file storage for High Performance Computing (HPC)
+- FSx for Windows File Server, supports SMB protocol and Windows NTFS
+- FSx for NetApp ONTAP
+
+---
+
+### **ELB - Elastic Load Balancers**
+
+> Elastic Load Balancing (ELB) automatically distributes incoming application traffic across multiple targets and virtual appliances in one or more Availability Zones (AZs) to improve application scalability.
+
+There are two kinds of scalability
+
+- Vertical Scalability - Vertical Scalability means increasing the size of the instance, ex: t2.micro to t2.large, use case: database
+- Horizontal Scalability - Horizontal Scalability means increasing the number of instances / systems for your application use case: web application
+
+_High Availability means running your application/system in at least 2 availability zones._
+
+Scalability: ability to accommodate a larger load by making the hardware stronger(scale up) or by adding nodes(scale out)  
+Elasticity: once a system is scalable, elasticity means that there will be some "auto-scaling" so that the system can scale based on the load.
+
+Load Balancing  
+Load Balancers are servers that forward internet traffic to multiple servers(EC2 Instances) downstream.
+
+Types of load balancers on AWS
+
+- Application Load Balancer (HTTP/HTTPS only) - Layer 7
+- Network Load Balancer (ultra-high performance, allows for TCP) - Layer 4
+- Classic Load Balancer (slowly retiring) - Layer 4 & 7
+- Gateway Load Balancer
+
+---
+
+### **ASG - Auto Scaling Group**
+
+> An Auto Scaling group contains a collection of Amazon EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management.
