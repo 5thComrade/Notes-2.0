@@ -150,3 +150,121 @@ Redis lists are linked lists of string values. Redis lists are frequently used t
 
 - Implement stacks and queues.
 - Build queue management for background worker systems.
+
+**Push Items to the list from the left**
+
+```js
+const data = await redis.lpush(key, value_1, value_2, ...);
+```
+
+**Push Items to the list from the right**
+
+```js
+const data = await redis.rpush(key, value_1, value_2, ...);
+```
+
+**Remove Items from the list starting from the left**
+
+```js
+const data = await redis.lpop(key, count?);
+```
+
+**Remove Items from the list starting from the right**
+
+```js
+const data = await redis.rpop(key, count?);
+```
+
+**Length of a list**
+
+```js
+const data = await redis.llen(key);
+```
+
+### Hashes
+
+Redis hashes are record types structured as collections of field-value pairs. You can use hashes to represent basic objects and to store groupings of counters, among other things.
+
+**Create/Update a new hash with multiple fields**
+
+```js
+const data = await redis.hmset(key, {
+  field_1: value_1,
+  field_2: value_2,
+  ...
+});
+```
+
+**Get all the fields and their values from a hash**
+
+```js
+const data = await redis.hgetall(key);
+```
+
+### Sorted Sets
+
+A Redis sorted set is a collection of unique strings (members) ordered by an associated score. When more than one string has the same score, the strings are ordered lexicographically. Some use cases for sorted sets include:
+
+- Leaderboards. For example, you can use sorted sets to easily maintain ordered lists of the highest scores in a massive online game.
+- Rate limiters. In particular, you can use a sorted set to build a sliding-window rate limiter to prevent excessive API requests.
+
+**Add items to a Sorted Set**
+
+```js
+const data = await redis.zadd(
+      key,
+      {
+        score: score_1,
+        member: member_1,
+      },
+      {
+        score: score_2,
+        member: member_2,
+      }
+      ...
+    );
+```
+
+**Only add new elements. Don't update already existing elements.**
+
+```js
+const data = await redis.zadd(
+      key,
+      {
+        nx: true,
+      },
+      {
+        score: score_1,
+        member: member_1,
+      },
+      {
+        score: score_2,
+        member: member_2,
+      }
+      ...
+    );
+```
+
+**Get all the members from a sorted set**
+
+```js
+const data = await redis.zrange(key, 0, -1);
+```
+
+**Return the number of members in a sorted set**
+
+```js
+const data = await redis.zcard(key);
+```
+
+### Pipelines
+
+If you want to send a lot of redis requests its better if we create a JavaScript pipeline.
+
+```js
+const data = await Promise.all(
+  arr.map((item) => {
+    return redis.hgetall(`books:${item.id}`);
+  })
+);
+```
