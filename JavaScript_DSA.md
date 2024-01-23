@@ -76,3 +76,56 @@ Therefore in the above code example, Method 1 has O(n) and Method 2 has O(1).
 3. Accessing elements in an array(by index) or object(by key) is constant
 4. In a loop, the complexity is the length of the loop times the complexity of whatever happens inside of the loop.
 ---
+
+### Space Complexity
+
+We can also use Big O notation to analyze space complexity: how much additional memory do we need to allocate in order to run the
+code in our algorithm?
+
+Sometimes you'll hear the term auxiliary space complexity to refer to space required by the algorithm, not including space taken up by the inputs.
+When we talk about space complexity, techinically we'll be talking about auxiliary space complexity.
+
+Space Complexity in JS - Rules of thumb
+- Most primitives(booleans, numbers, undefined, null) are constant space.
+- Strings require O(n) space (where n is string length)
+- Reference types are generally O(n), where n is the length(for arrays) or number of keys(for objects)
+
+For example:
+
+```js
+function sum(arr) {
+    let total = 0;
+    
+    for(let i = 0; i < arr.length; i++) {
+        total += arr[i]
+    }
+    
+    return total;
+}
+```
+
+In the above example, we define 2 new variables total and i. Thats it, the Space Complexity of the above function is O(1)
+
+Another example
+
+```js
+function double(arr) {
+    let new_arr = [];
+    
+    for(let i = 0; i < arr.length; i++) {
+        new_arr.push(2 * arr[i])
+    }
+    
+    return new_arr;
+}
+```
+
+The space complexity of the above function is O(n)
+
+---
+
+### Logarithms
+
+log<sub>2</sub>(value) = exponent &rarr; 2<sup>exponent</sup> = value
+
+---
