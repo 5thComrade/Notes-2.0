@@ -39,3 +39,30 @@ If you've choosen what template you want to use run the following command to cre
 sls create --template <name_of_the_template> --path <name_of_the_folder>
 ```
 
+If you don't want to deploy the entire stack again but instead want to just deploy the function run the below command
+
+```sh
+sls deploy function -f <function_name>
+```
+
+#### How to invole functions locally
+
+Run the following command to invoke functions locally
+
+```sh
+sls invoke -f <function_name>
+```
+
+Invoke the function and see its logs
+
+```sh
+sls invoke -f <function_name> --log
+```
+
+How to remove a function completely
+
+```sh
+sls remove
+```
+
+---
