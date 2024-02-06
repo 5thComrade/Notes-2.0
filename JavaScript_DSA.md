@@ -129,3 +129,5 @@ The space complexity of the above function is O(n)
 log<sub>2</sub>(value) = exponent &rarr; 2<sup>exponent</sup> = value
 
 ---
+
+### Big O of Objects
