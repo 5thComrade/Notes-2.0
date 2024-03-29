@@ -68,5 +68,19 @@ func main() {
     Any time we make a executable file using the statement **package main** the file should have a func named **main** inside.
   
 - What does 'import "fmt"' mean?
+
+  If you want to import another package into your package you use the import statement. fmt is the name of a standard library package
+  that is included with the Go programming language by default.
+
+  To know more about standard packages included vist [https://pkg.go.dev/std](https://pkg.go.dev/std)
+  
 - Whats the func thing?
+
+  func is short for function.
+  
 - How is the main.go file organized?
+
+  package declaration -> import other packages that we need -> declare functions, tell Go to do things
+  
+---
+
