@@ -55,6 +55,8 @@ func main() {
 
   If there are three files main.go, support.go and helper.go all belonging to package main, then the first line of each file should be **package main**
 
+  Files in the same package do not have to be imported into each other.
+
   #### Types of packages
   - Executable: Generates a file that we can run
   - Reusable: Code used as helpers. Good place to put reusable logic.
