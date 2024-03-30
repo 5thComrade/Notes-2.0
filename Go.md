@@ -131,4 +131,36 @@ func newCard() string {
 
 ## Slices and For loops
 
+Go has two basic data structures to handle a list of records.
+
+- Array: fixed length list of things
+- Slice: an array that can grow or shrink
+
+Every element in an array/slice must be of same type
+
+```go
+func main() {
+	cards := []string{"Card 1", "Card 2"}
+
+	fmt.Println(cards)
+}
+```
+
+To add new items into the slice
+
+```go
+cards = append(cards, "Card 3")
+```
+
+How to iterate over a slice
+
+```go
+for i, card := range cards {
+	fmt.Println(i, card)
+}
+```
+
+---
+
+## OO Approach vs Go Approach
 
