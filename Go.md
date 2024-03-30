@@ -83,4 +83,50 @@ func main() {
   package declaration -> import other packages that we need -> declare functions, tell Go to do things
   
 ---
+## Creating variables in Go
+
+```go
+var card string = "Ace of Spades"
+```
+
+Another way to declare a variable in GoLang is shown below
+
+```go
+card := "Ace of Spades"
+```
+
+### Basic Go Types
+
+- bool
+- string
+- int
+- float64
+
+We can initialize a variable outside of a function, we just can't assign a value to it.
+
+---
+
+## Functions and Return types
+
+If you are declaring another function that returns something, you should mention the return type in the function declaration
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var card string = newCard()
+	fmt.Println(card)
+}
+
+func newCard() string {
+	return "Five of Diamonds"
+}
+```
+
+---
+
+## Slices and For loops
+
 
