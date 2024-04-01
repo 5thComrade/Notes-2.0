@@ -162,5 +162,37 @@ for i, card := range cards {
 
 ---
 
-## OO Approach vs Go Approach
+## Creating custom types
 
+```go
+type deck []string
+```
+
+We just created a type deck which is essentially a slice of strings.
+
+Receiver Functions
+
+```go
+package main
+
+import "fmt"
+
+type deck []string
+
+func (d deck) print() {
+	for i, card := range d {
+		fmt.Println(i, card)
+	}
+}
+```
+
+What are receiver functions?
+
+```go
+func (d deck) print()
+```
+
+Any variable of type 'deck' now gets access to the print() method. The actual copy of the deck we're working
+with is available in the function as a variable called 'd'
+
+---
