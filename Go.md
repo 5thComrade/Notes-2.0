@@ -195,4 +195,31 @@ func (d deck) print()
 Any variable of type 'deck' now gets access to the print() method. The actual copy of the deck we're working
 with is available in the function as a variable called 'd'
 
+
+```go
+func newDeck() deck {
+	cards := deck{} // creates a new variable cards of type deck which is empty
+
+	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
+	cardValues := []string{"Ace", "Two", "Three", "Four"}
+
+	for _, suit := range cardSuits {
+		for _, value := range cardValues {
+			cards = append(cards, value+" of "+suit)
+		}
+	}
+
+	return cards
+}
+```
+
+Split a Slice in Go
+
+```go
+fruits = []string{"apple", "banana", "mango", "pear"}
+
+fruits[0:2] // {"apple", "banana"} notice the colon between 0 and 2. We don't comma separate the indexes
+fruits[:2] // is same as fruits[0:2]
+fruits[0:] // from 0 till the end of the array
+```
 ---
