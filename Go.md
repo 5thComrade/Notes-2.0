@@ -223,3 +223,20 @@ fruits[:2] // is same as fruits[0:2]
 fruits[0:] // from 0 till the end of the array
 ```
 ---
+
+## Functions with arguments and multiple returns
+
+```go
+func  deal(d deck, handSize int) (deck, deck) {
+	return d[:handSize], d[handSize:]
+}
+```
+
+Capture the multiple returns from a function
+
+```go
+hand, remainingDeck := deal(cards, 5)
+
+fmt.Println("hand", hand)
+fmt.Println("remainingDeck", remainingDeck)
+```
