@@ -224,7 +224,9 @@ You can also request indexing.
 ## 15. Track performance of the app
 
 [Page Speed](https://pagespeed.web.dev/)
+
 [Lighthouse extension](https://developer.chrome.com/docs/lighthouse/overview)
+
 [WooRank extension](https://www.woorank.com/en/extension)
 
 ## 16. Responsive images
