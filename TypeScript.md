@@ -2,6 +2,8 @@
 
 TypeScript is a super set of JavaScript.
 
+To read more about TypeScript visit [John Smilga's TypeScript Repo](https://github.com/john-smilga/typescript-course)
+
 ### **Why TypeScript?**
 
 - Types increase productivity by helping you avoid many mistakes. By using types, you can catch bugs at the compile-time instead of having them occurring at runtime.
@@ -282,4 +284,35 @@ mouseEvent = "dblclick"; // valid
 mouseEvent = "mouseup"; // valid
 mouseEvent = "mousedown"; // valid
 mouseEvent = "mouseover"; // compiler error
+```
+
+#### **TypeScript Optional Types**
+
+Example:
+
+```ts
+type obj = {
+    name: string,
+    age?: number, // age could either be a number or undefined
+}
+```
+
+---
+
+### **Functions in TypeScript**
+
+Example: Function prop type
+
+```ts
+function sayHi(name: string) {
+  console.log(`Hello ${name}`)
+}
+```
+
+Example: Function return type
+
+```ts
+function calculateDiscount(price: number): number {
+  return price * 0.9;
+}
 ```
