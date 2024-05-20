@@ -301,7 +301,7 @@ type obj = {
 
 ### **Functions in TypeScript**
 
-Example: Function prop type
+Example: Function param type
 
 ```ts
 function sayHi(name: string) {
@@ -315,4 +315,59 @@ Example: Function return type
 function calculateDiscount(price: number): number {
   return price * 0.9;
 }
+```
+
+Example: Function with optional params
+
+```ts
+function calculatePrice(price: number, discount?: number): number { // discount is an optional paramater
+  if (discount) {
+    return price - discount;
+  }
+  return price;
+}
+```
+
+Example: Functions with default param value
+
+```ts
+function calculatePrice(price: number, discount: number = 0): number { // default value of discount is 0 if discount isn't provided
+  if (discount) {
+    return price - discount;
+  }
+  return price;
+}
+```
+
+Example: Functions with the rest operator
+
+```ts
+function sum(message: string, ...numbers: number[]): string {
+  return 'some string that uses the parameters'
+}
+```
+
+Example: Functions that don't return anything
+
+```ts
+function logMessage(message: string): void {
+  console.log(message)
+}
+```
+
+Example: Function with union type params
+
+```ts
+function processInput(input: number | string) {
+  if (typeof input === 'number') { // this is a type guard
+    console.log(input * 2)
+  } else {
+    console.log(input.toLowerCase())
+  }
+}
+```
+
+Example: Functions with objects as params
+
+```ts
 ```
