@@ -79,3 +79,67 @@ export default function BlogPost({ params }: { params: { blogId: string } }) {
 }
 ```
 
+To get nested dynamic routes, the page file path should be as follows
+
+```js
+/src/app/blog/[blogId]/reviews/[reviewId]/page.tsx
+```
+
+The blogId and reviewId as passed as params to the component
+
+```tsx
+export default function BlogPost({ params }: { params: { blogId: string, reviewId: string } }) {
+  return <h1>Blog Post: {params.blogId} Review: {params.reviewId}</h1>
+}
+```
+
+**Catch-all Segments**
+
+```js
+/src/app/docs/[...slug]/page.tsx // essentially anything that comes after docs in the url will see this page(ex: localhost:3000/docs/feature1/example1/review1)
+```
+
+To get the slug 
+
+```tsx
+export default function BlogPost({ params }: { params: { slug: string[] } }) {
+  return <h1>Loop through the slug to display the values</h1>
+}
+```
+
+**Not Found Page**
+
+For a custom 404 page just create a not-found.tsx file in the app folder.
+
+```js
+/src/app/not-found.tsx
+```
+
+If you want to send the user to the not-found page programatically then use the notFound function
+
+```js
+import { notFound } from "next/navigation" // just call this function when you need to re-direct the user to the 404 page
+```
+
+**Private Folders**
+
+A private folder indicates that it is a private implementation detail and should not be considered by the routing system. This folder and all its sub-folders are excluded from routing. To create a private folder just prefix the folder name with an underscore.
+
+```js
+/src/app/dashboard/_helpers/index.ts
+```
+
+**Route Groups**
+
+Allows us to logically group our routes and project files without affecting the URL path structure.
+
+```js
+/src/app/(auth)/register/page.tsx // the url will still be /register not /auth/register
+/src/app/(auth)/login/page.tsx
+/src/app/(auth)/forgotPassword/page.tsx
+```
+
+---
+
+### **Layout**
+
