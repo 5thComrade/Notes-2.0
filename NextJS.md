@@ -143,3 +143,103 @@ Allows us to logically group our routes and project files without affecting the 
 
 ### **Layout**
 
+A layout is UI that is shared between multiple pages in the app. You can define a layout by default exporting a React component from layout.tsx file.
+
+That component should accept a children prop that will be populated with a child page during rendering.
+
+**Nested layouts**
+
+If you need a particular layout for a specific page, just create a layout.tsx file in the page folder and export a default component.
+
+Now this layout will be inside the RootLayout and hence forming a nested layout.
+
+**Route Group Layout**
+
+Route Groups allow to selectively apply a layout to certain segments while leaving others unchanged.
+
+If you create a layout.tsx file inside a route group folder that layout gets applied to all the routes in that route group. You can also further nested route groups for selectively applying layouts.
+
+```js
+/src/app/auth/layout.tsx;
+/src/app/auth/login/page.tsx;
+/src/app/auth/signup/page.tsx;
+```
+
+**Routing Metadata**
+
+Ensuring proper SEO is crucial for increasing visibility and attracting users. NextJS introduced the Metadata API which allows you to define metadata for each page. Metadata ensures accurate and relevant information is displayed when your pages are shared or indexed.
+
+Metadata rules: Both layout.tsx and page.tsx files can export metadata. If defined in a layout, it applies to all pages in that layout, but if defined in a page, it applies only to that page.
+
+Metadata is read in order, from the root level down to the final page level.
+
+```tsx
+import { Metadata } from "next";
+
+// static metadata object
+export const metadata = {
+  title: "About Something",
+};
+
+// dynamic metadata
+export const generateMetadata = ({ params }): Metadata => {
+  // you can also perform some async activity and then fetch some data to display
+  return {
+    title: `Product ${params.productId}`,
+  };
+};
+```
+
+**title metadata**
+
+The title can be set as a string or an object.
+
+```tsx
+import { Metadata } from "next"
+
+export const metadata: Metadata {
+    title: {
+        absolute: "Title that ignores the title.template property from the parent and sets an absolute title",
+        default: "Title", // fallback for child route segments that don't explicitly mention as title metadata
+        template: "%s - Eventrak" // %s will be replaced by the title from the child metadata
+    }
+}
+```
+
+### **Navigation**
+
+To enable client-side navigation NextJS provides us with the Link component.
+
+The <Link> component is a React component that extends the HTML <a> element, and its the primary way to navigate between routes in NextJS.
+
+```tsx
+<Link href="/blog">Blog</Link>
+<Link href="/blog/1" replace>Blog</Link> // the replace prop replaces the current history state instead of adding a new url to the stack
+```
+
+**Active links**
+
+use the usePathname hook to identify the current path and then style the link accordingly.
+
+**Navigating programmatically**
+
+```tsx
+"use client";
+
+import { useRouter } from "next/navigation";
+
+export default function OrderProduct() {
+  const router = useRouter();
+
+  const handleRedirection = () => {
+    router.push("/");
+  };
+}
+```
+
+**Templates**
+
+Templates are similar to layouts in that they wrap each child layout or page.
+
+But, with templates, when a user navigates between routes that share a template, a new instance of the component is mounted, DOM elements are recreated.
+
