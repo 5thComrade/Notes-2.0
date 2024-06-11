@@ -241,5 +241,69 @@ export default function OrderProduct() {
 
 Templates are similar to layouts in that they wrap each child layout or page.
 
-But, with templates, when a user navigates between routes that share a template, a new instance of the component is mounted, DOM elements are recreated.
+But, with templates, when a user navigates between routes that share a template, a new instance of the component is mounted, DOM elements are recreated, state is not preserved, and effects are re-synchronized. A template can be defined by exporting a default React component from a template.js or template.tsx file.
 
+Similar to layouts, templates also should accept a children prop which will render the nested segments in the route.
+
+If there is both a layout.tsx and template.tsx file then the layout wraps the template and then the template wraps the children.
+
+---
+
+**Loading UI**
+
+loading.tsx: This file allows us to create loading states that are displayed to users while a specific route segments content is loading.
+
+The loading state appears immediately upon navigation, giving users the assurance that the application is responsive and actively loading content.
+
+---
+
+**Error handling**
+
+error.tsx: create this file wherever we want to handle errors gracefully. Ideally some of the page functionalities(navbar, footer) should be available when the error is handled.
+
+To view the error page, build the app and then run the app. Cause in development mode the errors are shown differently for developers.
+
+```tsx
+"use client";
+
+export default function ErrorBoundary({ error }: { error: Error }) {
+  return <div>Error in blogId: {error.message}</div>;
+}
+```
+
+Automatically wrap a route segment and its nested children in a React Error Boundary.
+
+Create error UI tailored to specific segments using the file-system hierarchy to adjust granularity.
+
+Isolate errors to affected segments while keeping the rest of the application functional.
+
+Add functionality to attempt to recover from an error without a full page reload.
+
+---
+
+**Recovering from errors**
+
+ErrorBoundary gets a reset prop that can be called to recover the page that threw an error. Ensure that the page that is being recovered is also a client component.
+
+```tsx
+"use client";
+
+export default function ErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  return (
+    <div>
+      Error in blogId: {error.message}
+      <button onClick={reset}>Try again</button>
+    </div>
+  );
+}
+```
+
+---
+
+**Handling Errors in Nested Routes**
