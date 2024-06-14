@@ -307,3 +307,90 @@ export default function ErrorBoundary({
 ---
 
 **Handling Errors in Nested Routes**
+
+Errors bubble up to the closest parent error boundary.
+
+An error.tsx file will cater to errors for all its nested child segments. By positioning error.tsx files at different levels in the nested folders of a route, you can achieve a more granular level of error handling.
+
+---
+
+**Handling errors in Layouts**
+
+Look at the component hierarchy in NextJS applications
+
+```tsx
+<Layout>
+  <Template>
+    <ErrorBoundary fallback={<Error />}>
+      <Suspense fallback={<Loading />}>
+        <ErrorBoundary fallback={<NotFound />}>
+          <Page />
+        </ErrorBoundary>
+      </Suspense>
+    </ErrorBoundary>
+  </Template>
+</Layout>
+```
+
+If you closely look at the component hierarchy, you'll notice that the error boundary is inside the Layout and Template components. If these components throw an error the error boundary does not catch them.
+
+To navigate this issue, we should place the error.tsx in the layouts parents segment.
+
+---
+
+**Parallel Routes**
+
+Parallel routes are an advanced routing mechanism that allows for the simultaneous rendering of multiple pages within the same layout.
+
+Parallel routes in NextJS are defined using a feature known as slots. Slots help structure our content in a modular fashion. To define a slot we use the @folder naming convention.
+
+Each slot is then passed as a prop to its corresponding layout.tsx file.
+
+So our folder structure would look like below
+
+```sh
+app/dashboard/@notifications/page.tsx
+app/dashboard/@users/page.tsx
+app/dashboard/@analytics/page.tsx
+app/dashboard/layout.tsx
+app/dashboard/page.tsx
+```
+
+Now each slot is then passed to the layout as a prop
+
+```tsx
+export default function DashboardLayout({
+    children,
+    notifications,
+    users,
+    analytics
+}: {
+    children: React.ReactNode;
+    notifications: React.ReactNode;
+    users: React.ReactNode;
+    analytics: React.ReactNode;
+}) {
+    return (
+        <>
+            <div>{children}</div>
+            <div>{notifications}</div>
+            <div>{users}</div>
+            <div>{analytics}</div>
+        </div>
+    )
+}
+```
+
+Benefits of Parallel Routes
+
+- A clear benefit of parallel routes is their ability to split a single layout into various slots, making the code more manageable.
+
+- Independent route handling. Each slot of your layout can have its own loading and error states. This granular control is particularly beneficial in scenarios where different sections of the page load at varying speeds or encounter unique errors.
+
+- Sub-navigation. Each slot of your dashboard can essentially function as a mini-application, complete with its own navigation and state management. This is especially useful in a complex application such as our dashboard where different sections serve distinct purposes.
+
+---
+
+**Unmatched Routes**
+
+
