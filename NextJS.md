@@ -371,7 +371,7 @@ export default function DashboardLayout({
     analytics: React.ReactNode;
 }) {
     return (
-        <>
+        <div>
             <div>{children}</div>
             <div>{notifications}</div>
             <div>{users}</div>
@@ -387,10 +387,62 @@ Benefits of Parallel Routes
 
 - Independent route handling. Each slot of your layout can have its own loading and error states. This granular control is particularly beneficial in scenarios where different sections of the page load at varying speeds or encounter unique errors.
 
-- Sub-navigation. Each slot of your dashboard can essentially function as a mini-application, complete with its own navigation and state management. This is especially useful in a complex application such as our dashboard where different sections serve distinct purposes.
+- Sub-navigation. Each slot of your dashboard can essentially function as a mini-application, complete with its own navigation and state management. This is especially useful in a complex application such as our dashboard where different sections serve distinct purposes. If you have another sub-route in one of the slots and the url matches this sub-route then only that slot gets updated leaving all the other slots uneffected.
 
 ---
 
-**Unmatched Routes**
+**Unmatched Routes when dealing with Parallel Routes**
 
+- Navigation from the UI: In the case of navigation within the UI, NextJS retains the previously active state of a slot regardless of changes in the URL.
+
+- Page reload: NextJS immediately searches for a default.tsx file within each unmatched slot. The presence of this file is critical, as it provides the default content that NextJS will render in the user interface. If this default.tsx file is missing in any of the unmatched slots for the current route, NextJS will render a 404 error.
+
+For example: Lets say our /dashboard page has 4 slots(@children, @notifications, @users, @analytics). Lets say we create a sub-route within our @notifications slot called /archived. So when the user navigates to /dashboard/archived only the notifications slot gets updated with the new content and all the other slots remain as is. This behavior happens only when we navigate between routes from the UI(Link component).
+If we navigate to /dashboard/archived and then refresh the page the state gets refreshed and the other slots don't know what to show cause only /@notifications/archived has a matching route. Therefore you'd see a 404 page. Just create a default.tsx file in each slot to fix this issue.
+
+default.tsx file
+
+The default.tsx file in NextJS serves as a fallback to render content when the framework cannot retrieve a slots active state from the current URL. You have complete freedom to define the UI for unmatched routes: you can either mirror the content found in page.tsx or craft an entirely custom view.
+
+---
+
+**Conditional Routes**
+
+One can use parallel routes and slots to do conditional routing. For example: Lets say we have multiple slots and one slot is the login slot. We can then in the jsx add a condition to check if the user is authenticated then decide what slot to show.
+
+---
+
+**Intercepting Routes**
+
+Intercepting routes allow you to intercept or stop the default routing behaviour to present an alternate view or component when navigating through the UI, while still preserving the intended route for scenarios like page reloads.
+
+This can be useful if you want to show a route while keeping the context of the current page.
+
+For example: Let's say we have several images shown on the UI. When the user clicks on any of these images we want to change the url to 
+localhost:3000/photos/[id] and at the same time we don't want to navigate the user to a different page instead show the selected image in a modal.
+This is where intercepting routes play an important role. But when the user refreshes the page (localhost:3000/photos/[id]) or shares this url with someone else the image will be loaded in the page and not as a modal.
+
+There are some coding conventions that must be followed to intercept routes
+
+Lets say our routes are as follows
+
+```sh
+app/f1/page.tsx
+app/f1/f2/page.tsx
+app/f1/(.)f2/page.tsx ----- look at how this folder is defined (.)f2 this is the intercepted route for f2 route
+```
+
+- Use (.) when the routes are on the same level
+- Use (..) when the route that should be intercepted is one level above
+  ```sh
+  app/f1/f3/page.tsx
+  app/f1/f4/page.tsx
+  app/f1/f4/(..)f3/page.tsx ---- this is the intercepted route for f3 but when accessed from within f4 folder
+  ```
+- Using (..)(..) to match segments two levels above
+- Using (...) to match segments from the root app directory
+
+---
+
+**Parallel Intercepting Routes**
 
