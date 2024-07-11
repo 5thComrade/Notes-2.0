@@ -503,3 +503,52 @@ const deepWork: Book = {
   },
 };
 ```
+
+### Merging interfaces
+
+If you know the name of the interface you can add additonal props to it like below.
+
+```ts
+interface Person {
+  name: string;
+  getDetails: () => string;
+}
+
+interface Person { // notice that the name is same as the interface above. Now Person interface has 3 properties name, age and getDetails
+  age: number;
+}
+```
+
+### Extending interfaces
+
+Creating brand new interfaces that simply has all the properties from the parent interface plus additional properties.
+
+```ts
+interface Person {
+  name: string;
+  getDetails: () => string;
+}
+
+interface Employee extends Person {
+  employeeId: number;
+}
+```
+
+Extending from multiple interfaces
+
+```ts
+interface Person {
+  name: string;
+  getDetails: () => string;
+}
+
+interface Employee {
+  employeeId: number
+}
+
+interface Manager extends Person, Employee { // notice how Manager interface extends from both Person and Employee
+  managePeople: () => void;
+}
+```
+
+
