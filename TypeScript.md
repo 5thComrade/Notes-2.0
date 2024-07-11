@@ -552,3 +552,85 @@ interface Manager extends Person, Employee { // notice how Manager interface ext
 ```
 
 
+### Type Predicates
+
+A predicate takes the form parameterName is Type, where parameterName must be the name of a parameter from the current function signature.
+
+```ts
+const employee: Person | DogOwner | Manager = getEmployee(); // employee can either be of instance Person or of instance DogOwner or of instance Manager
+
+const isManager = (obj: Person | DogOwner | Manager): obj is Manager => { // obj is Manager is Type Predicate. 
+  return 'delegateTasks' in obj; // this returns true if delegateTasks is a method in the obj therefore its a manager
+}
+```
+
+---
+
+## Interface vs Type Alias
+
+A type alias is a way to give a name to a type. It can represent primitive types, union types, intersection types, tuples and any other types. Once defined,
+the alias can be used anywhere in place of the actual type.
+
+```ts
+type Person = {
+  name: string;
+  age: number;
+}
+
+let john: Person = { name: 'John', age: 25 }
+```
+
+An interface is a way to define a contract for a certain structure of an object.
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+}
+
+let john: Person = { name: 'John', age: 25 }
+```
+
+Interfaces cannot be used for primitive types like numbers, strings etc
+Interfaces can be merged using declaration merging.
+
+---
+
+## Tuples
+
+A tuple is a typed array with a pre-defined length and types for each index.
+
+```ts
+let person: [string, number] = ['antony', 27]
+
+let date: readonly [number, number, number] = [12, 17, 2024];
+
+date.push(34); // this will now not be possible because we marked date as readonly
+```
+
+---
+
+## Enums
+
+Enums allow a developer to define a set of named constants. Using enums can make it easier to document intent, or create a set of distinct cases. TypeScript provides both numeric and string-based enums.
+
+```ts
+enum ServerResponseStatus {
+  SUCCESS,
+  ERROR
+}
+
+interface ServerResponse {
+  result: ServerResponseStatus; // assigning the enum
+  data: string[];
+}
+
+function getServerResponse() {
+  return {
+    result: ServerResponseStatus.SUCCESS, // this is how we use enums
+    data: ['a', 'b', 'c']
+  }
+}
+```
+
+---
