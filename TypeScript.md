@@ -370,4 +370,136 @@ function processInput(input: number | string) {
 Example: Functions with objects as params
 
 ```ts
+function createEmployee({ id }: { id: number }): {
+  id: number;
+  isActive: boolean;
+} {
+  return {
+    id: id,
+    isActive: true,
+  };
+}
+
+// alternative approach
+
+type StudentT = {
+  id: number;
+  name: string;
+};
+
+function createStudent(student: StudentT): void {
+  console.log("student: ", student);
+}
+```
+
+Example: Default value for object parameter when passed as prop
+
+```ts
+function processData(
+  input: string | number,
+  config: { reverse: boolean } = { reverse: false }
+) {
+  console.log("reverse:", config.reverse);
+}
+```
+
+---
+
+## Type Alias
+
+```ts
+type UserT = { id: number; name: string; isActive: boolean }; // this is a type alias
+```
+
+Intersection Type
+
+```ts
+type Book = {
+    id: number;
+    name: string;
+    price: number;
+}
+
+const book1: Book = {
+    id: 1,
+    name: 'How to cook dragons'
+    price: 200
+}
+
+type DiscountedBook = Book & { discount: number } // this is intersection type
+
+const discountedBook: DiscountedBook = {
+    id: 2,
+    name: 'How to negotiate a discount'
+    price: 180,
+    discount: 10
+}
+```
+
+You can also have computed values as props in type alias's
+
+```ts
+const propName = "age";
+
+type Tiger = {
+  [propName]: numner;
+};
+```
+
+---
+
+## Interface
+
+Type Alias and Interface can be used interchangeably, they both do the same.
+
+```ts
+// There are two main tools to declare the shape of an
+// object: interfaces and type aliases.
+
+// We recommend you use interfaces over type
+// aliases. Specifically, because you will get better error
+// messages.
+interface Book {
+  readonly isbn: number;
+  title: string;
+  author: string;
+  genre?: string;
+}
+
+const deepWork: Book = {
+  isbn: 123,
+  title: "deep work",
+  author: "cal newport",
+  genre: "self-help",
+};
+```
+
+### Methods in Interfaces
+
+```ts
+interface Book {
+  readonly isbn: number;
+  title: string;
+  author: string;
+  genre?: string;
+  printAuthor(): void; // methods in interface
+  printTitle(message: string): string;
+  printSomething: (n: number) => number; // alternate way to define methods
+}
+
+const deepWork: Book = {
+  isbn: 123,
+  title: "deep work",
+  author: "cal newport",
+  genre: "self-help",
+  printAuthor() {
+    console.log("Author: ", this.author);
+  },
+  printTitle(m) {
+    return `${this.title} ${m}`;
+  },
+  printSomething: (n) => {
+    return n;
+  },
+};
 ```
