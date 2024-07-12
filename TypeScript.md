@@ -653,5 +653,24 @@ The unknown type in TypeScript is a type-safe counterpart of the type any. It's 
 perform some type-checking before we can use it.
 
 ```ts
+let unknownValue: unknown
 
+unknownValue = 'hello world';
+
+if (typeof unknownValue === 'string') { // we need to check the type of unknown value before any operations on it
+  console.log(unknownValue.length)
+}
 ```
+
+---
+
+## Type never
+
+In TypeScript, never is a type that represents the type of values that never occur. You can't assign a value to a variable of type never.
+
+```ts
+let someValue: never = 0; // typescript will not be happy setting a value to a variable of type never
+```
+
+---
+
