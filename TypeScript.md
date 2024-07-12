@@ -634,3 +634,24 @@ function getServerResponse() {
 ```
 
 ---
+
+## Type Assertion
+
+It is essentially a way to tell TypeScript that we know what the type is.
+
+```ts
+let someValue: any = 'this is a string';
+
+let stringLength: number = (someValue as string).length; // the as keyword asserts that someValue is actually of type string
+```
+
+---
+
+## Type unknown
+
+The unknown type in TypeScript is a type-safe counterpart of the type any. It's like saying that a variable could be anything, but we need to 
+perform some type-checking before we can use it.
+
+```ts
+
+```
