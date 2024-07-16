@@ -674,3 +674,118 @@ let someValue: never = 0; // typescript will not be happy setting a value to a v
 
 ---
 
+Modules in TypeScript
+
+TypeScript doesn't treat a file as a module by default, they are actually created as scripts in the global scope. That is, if we define a variable in one file and then again define another variable with the same name in a different file, TypeScript is going to complain.
+
+How to fix this?
+
+1: if you add import/export statement in the file, the file is immediately treated as a module.
+
+2: open tsconfig.json and add 'moduleDetection' as force
+
+```json
+{
+  "moduleDetection": "force"
+}
+```
+
+How does importing something from a .js file inside a .ts file work?
+
+By default ts will not be able to detect the .js file cause its not .ts. We can however force ts to allow js by setting allowJs to true in the tsconfig.json file.
+
+---
+
+### Type Guarding
+
+Type guarding is a term in TypeScript that refers to the ability to narrow down the type of an object within a certain scope. This is usually done using conditional statements that check the type of an object.
+
+- typeof
+
+```ts
+function checkValue(v: ValueT) {
+  if (typeof v === 'string') {
+    console.log('this type guard suggests the value is of type string.')
+  }
+}
+```
+
+- Equality narrowing
+
+  In TypeScript, equality narrowing is a form of type narrowing that occurs when you use equality checks like === or !== in your code.
+
+  ```ts
+  type Dog = { type: 'dog'; name: string; bark: () => void }
+  type Cat = { type: 'cat'; name: string; meow: () => void }
+
+  type Animal: Dog | Cat
+
+  function makeSound(a: Animal) {
+    if (a.type === 'dog') {
+      a.bark()
+    } else {
+      a.meow()
+    }
+  } 
+  ```
+
+- check for property
+
+  ```ts
+  type Dog = { type: 'dog'; name: string; bark: () => void }
+  type Cat = { type: 'cat'; name: string; meow: () => void }
+
+  type Animal: Dog | Cat
+
+  function makeSound(a: Animal) {
+    if ('bark' in a) { // checking the property
+      a.bark()
+    } else {
+      a.meow()
+    }
+  } 
+  ```
+
+- "Truthy"/"Falsy" guard
+
+  ```ts
+  function printLength(str: string | null | undefined) {
+    if (str) { // checking for "Truthy"/"Falsy"
+      console.log('length: ', str.length);
+    }
+  }
+  ```
+
+- instanceof type guard
+
+  ```ts
+  try {
+    throw new Error("some error")
+  } catch(error) {
+    if (error instanceof Error) {
+      console.log('Error message: ', error.message)
+    } else {
+      console.log(error)
+    }
+  }
+  ```
+
+  ```ts
+  if (input istanceof Date) {
+    console.log('this input is a Date')
+  }
+  ```
+
+- Type Predicate
+
+  A type predicate is a function whose return type is a special kind of type that can be used to narrow down types within conditional blocks.
+
+  ```ts
+  function isStudent(person: Person): person is Student { // this is a type predicate function
+    return 'study' in person;
+  }
+  ```
+
+- Discriminated Unions and exhaustive check using the never type
+
+  
