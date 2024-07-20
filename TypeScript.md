@@ -830,3 +830,29 @@ function checkValue(v: ValueT) {
 
 ## Generics
 
+```ts
+let array1: Array<string> = ['Apple', 'Mango', 'Banana']; // Array is a default interface that comes with TypeScript and the angle brackets defines generics
+
+function genericFunction<T>(arg: T): T {
+  return arg;
+}
+
+const someStringValue = genericFunction<string>('Hello');
+
+interface GenericInterface<T> {
+  value: T;
+  getValue: () => T;
+}
+
+const genericString: GenericInterface<string> = {
+  value: 'Hello World!',
+  getValue() {
+    return this.value;
+  }
+}
+
+async function someAsyncFunc(): Promise<string> {
+  return 'hello world!';
+}
+```
+
