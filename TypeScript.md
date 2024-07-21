@@ -856,3 +856,60 @@ async function someAsyncFunc(): Promise<string> {
 }
 ```
 
+Multiple generic types
+
+```ts
+function pair<T, U>(param1: T, param2: U): [T, U] {
+  return [param1, param2];
+}
+```
+
+If you want to restrict generic types use the following syntx
+
+```ts
+function processValue<T extends string | number>(value: T): T {
+  return value;
+}
+
+type Car = {
+  brand: string;
+  model: number;
+}
+
+type Product = {
+  name: string;
+  price: number;
+}
+
+type: Student = {
+  name: string;
+  age: number;
+}
+
+function printName<T extends { name: string }>(input: T): void {
+  console.log(input.name); // this was possible because T extends two types that have the name prop, only Product and Student will be accepted by this function
+}
+```
+
+Default generic type
+
+```ts
+interface StoreData<T = any> { // any is the default type of T
+  data: T[];
+}
+
+const storeNumbers: StoreData<number> = {
+  data: [1, 2, 3, 4]
+}
+
+const storeRandom: StoreData = { // we didn't even pass a generic type here
+  data: ['hello', 1]
+}
+```
+
+Axios.get expects a generic type for the data property it returns.
+
+```ts
+const { data } = axios.get<{name: string}[]>(someUrl); // now data will be considered as an array of objects with 1 prop ie name. If the generic is not passed data will be of type any
+```
+
