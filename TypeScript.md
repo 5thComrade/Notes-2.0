@@ -913,3 +913,40 @@ Axios.get expects a generic type for the data property it returns.
 const { data } = axios.get<{name: string}[]>(someUrl); // now data will be considered as an array of objects with 1 prop ie name. If the generic is not passed data will be of type any
 ```
 
+How to provide the shape of the data once fetched from the api?
+
+```ts
+type Tour = {
+  id: string;
+  name: string;
+  info: string;
+  image: string;
+  price: string;
+}
+
+async function fetchData(url: string): Promise<Tour[]> { // we are setting the type of the data that is returned here
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('HTTP Error');
+    }
+    const data: Tour[] = await response.json(); // we are setting the type of the data here
+
+    return data;
+  } catch(err) {
+    console.log(err);
+    return []
+  }
+}
+```
+
+--- 
+
+### Run-time validation of data
+
+Well during build-time we can use type definition to check the type of data that is returned from an external api.
+
+But if suddenly the api stops sending a property or adds any additional properties to the response and if our type definition doesn't know about it, it could lead to run-time errors.
+
+This can be avoided at run-time by using a schema-validation library like [Zod](https://zod.dev/).
+
