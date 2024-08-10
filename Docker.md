@@ -124,3 +124,39 @@ docker container rm -f <list of container id/name>
 - Opens up port 80 on host and forwards to port 80 in container
 - Starts the container by using the CMD in the image Dockerfile
 
+### List processes inside a container
+
+```sh
+docker run --name mongo -d mongo
+
+docker top mongo // this will list the processes running inside the mongo container
+```
+
+### Setting env variable for docker container
+
+```sh
+docker container run -d -p 3306:3306 --name db -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql // this will generate a random root password for the mysql db running inside the container
+```
+
+### What is going on in containers?
+
+- `docker container top` - process list in one container
+- `docker container inspect` - details of one container config
+- `docker container stats` - performance stats for all containers
+
+### Getting a Shell inside containers
+
+- `docker container run -it` - start new container interactively
+- `docker container exec -it` - run additional command in existing container
+
+```sh
+docker container run -it --name proxy nginx bash
+```
+
+The above command opens a bash shell inside the nginx container. Type `exit` to get out of the shell.
+
+The `bash` [COMMAND] tells the nginx container to ignore the default Command and instead open a Bash Shell that is interactive.
+
+```sh
+docker container start -ai ubuntu // This command is used for an interactive shell in existing container
+```
