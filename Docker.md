@@ -160,3 +160,88 @@ The `bash` [COMMAND] tells the nginx container to ignore the default Command and
 ```sh
 docker container start -ai ubuntu // This command is used for an interactive shell in existing container
 ```
+
+---
+
+## Docker Networks
+
+Each container is connected to a private virtual network "bridge".
+
+Each virtual network routes through NAT firewall on host IP.
+
+All containers on a virtual network can talk to each other without `-p`
+
+The best practice is to create a new virtual network for each app
+
+- network "my_web_app" for mysql and php/apache containers
+- network "my_api" for mongo and nodejs containers
+
+Docker follows something called, "Batteries included, but removable". Default works well in many cases, but easy to swap parts to customize it.
+
+You could
+
+- make new virtual networks
+- attach containers to more than one virtual network
+- skip virtual networks and use host IP
+- Use different Docker network drivers to gain new abilities
+
+`-p (--publish)`: Remember publishing ports is always in `HOST:CONTAINER` format.
+
+```sh
+# to see the port used by the container and the host
+
+docker container port <container id/name>
+
+# to get the IP address of the container
+
+docker container inspect --format '{{ .NetworkSettings.IPAddress }}' webhost
+```
+
+### My understanding of docker network
+
+So when you spin up a new container(C1) on your host machine, this new container(C1) is by default connected to a virtual network. If we spin up another container(C2), this container(C2) is also connected to the same virtual network. So C1 and C2 can talk to each other even if we don't expose any ports in the containers.
+
+Now lets say I want to open up a port in C1 and allow it to connect to my host machine, then we use the `-p` and expose the port to our machine. The communication between the host and the container will still be through the virtual network.
+
+Since only C1 has an exposed port to the host, the host cannot reach the C2 container. But we now know C1 and C2 can talk to each other.
+
+We can create multiple virtual networks and add containers to that network.
+
+---
+
+### CLI Management of Virtual Networks
+
+`docker network ls` - list out the networks
+`docker network inspect` - Inspect a network
+`docker network create --driver` - create a network
+`docker network connect` - attach a network to a container
+`docker network disconnect` - detach a network from container
+
+`--network bridge`: default docker virtual network which is NAT'ed behind the host IP.
+
+```sh
+# inspect a network and find containers attached to that network
+
+docker network inspect <network name>
+```
+
+`--network host` - it gains performance by skipping virtual networks but sacrifices security of container model
+
+```sh
+# create a new virtual network called my_app_net
+
+docker network create my_app_net
+```
+
+`network driver` - built-in or 3rd party extensions that give your virtual networks features
+
+```sh
+# connect a container to a new network
+
+docker network connect <network id> <container id>
+
+# disconnect a container to a new network
+
+docker network disconnect <network id> <container id>
+```
+
