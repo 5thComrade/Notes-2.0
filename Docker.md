@@ -245,3 +245,10 @@ docker network connect <network id> <container id>
 docker network disconnect <network id> <container id>
 ```
 
+### Default Security
+
+- Create your apps so frontend/backend sit on same Docker network
+- Their inter-communication never leaves host
+- All externally exposed ports closed by default
+- You must manually expose via `-p`, which is better default security
+
