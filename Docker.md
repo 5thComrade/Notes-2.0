@@ -212,9 +212,13 @@ We can create multiple virtual networks and add containers to that network.
 ### CLI Management of Virtual Networks
 
 `docker network ls` - list out the networks
+
 `docker network inspect` - Inspect a network
+
 `docker network create --driver` - create a network
+
 `docker network connect` - attach a network to a container
+
 `docker network disconnect` - detach a network from container
 
 `--network bridge`: default docker virtual network which is NAT'ed behind the host IP.
@@ -251,4 +255,20 @@ docker network disconnect <network id> <container id>
 - Their inter-communication never leaves host
 - All externally exposed ports closed by default
 - You must manually expose via `-p`, which is better default security
+
+Static IP's and using IP's for talking to containers is an anti-pattern.Please do your best to avoid it.
+
+### Docker DNS
+
+Docker daemon has a built-in DNS server that containers use by default.
+
+All the containers on a virtual network automatically gets DNS resolution using their container names.
+
+So if I have two nginx containers running on the same virtual network then we can ping one nginx server from the other using their container names.
+
+```sh
+docker container exec -it my_nginx_1 ping new_nginx_2
+```
+
+The default bridge network doesn't have this option, so creating a new network for your apps is always better.
 
