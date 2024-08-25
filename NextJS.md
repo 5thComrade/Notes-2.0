@@ -446,3 +446,34 @@ app/f1/(.)f2/page.tsx ----- look at how this folder is defined (.)f2 this is the
 
 **Parallel Intercepting Routes**
 
+In the photo example mentioned in `Intercepting Routes` section, when the user clicks on an image a modal of the image loads and the url changes to something like `/image/[id]`.
+
+To achieve that example, we need parallel intercepting routes.
+
+Create a `@modal` slot in the same level as the layout of your page and included it in the `layout` file. Inside the `@modal` slot create an intercepting-route like `(..)photo-feed/[id]` and return the same stuff you returned from `photo-feed/[id]` file from this intercepted route but within a modal.
+
+The Youtube reference link [Codevolution - Parallel Intercepting Routes](https://youtu.be/mVOvx9eVHg0?si=3yQs8lF1PSQFfeOQ)
+
+---
+### Route Handlers
+
+Unlike page routes, which respond with HTML content, route handlers allow you to create RESTful endpoints, giving you full control over the response.
+
+There is no overhead of having to create and configure a separate server.
+
+Route handlers are also great for making external API requests. Route handlers run server-side, ensuring that sensitive information like private keys remains secure and never gets shipped to the browser.
+
+Create a folder within the `app` folder in your NextJS project and create a file called `route.ts` this endpoint will now be treated as a `Route handler` by NextJS.
+
+In the `route.ts` file
+
+```ts
+export async function GET() {
+	return new Response("Hello world!")
+}
+```
+
+The convention is to create a folder called `api` inside the `app` folder and the create all your routes inside the `api` folder.
+
+If you have `route.ts` and a `page.tsx` within the same route, the `route.ts` will be served by default and not the `page.tsx`.
+
