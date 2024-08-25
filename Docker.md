@@ -272,3 +272,4 @@ docker container exec -it my_nginx_1 ping new_nginx_2
 
 The default bridge network doesn't have this option, so creating a new network for your apps is always better.
 
+---
