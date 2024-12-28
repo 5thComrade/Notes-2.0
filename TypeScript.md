@@ -944,9 +944,244 @@ async function fetchData(url: string): Promise<Tour[]> { // we are setting the t
 
 ### Run-time validation of data
 
+
 Well during build-time we can use type definition to check the type of data that is returned from an external api.
 
 But if suddenly the api stops sending a property or adds any additional properties to the response and if our type definition doesn't know about it, it could lead to run-time errors.
 
-This can be avoided at run-time by using a schema-validation library like [Zod](https://zod.dev/).
+This can be avoided at run-time by using a schema-validation library like [Zod](https://zod.dev/).
+
+```ts
+import {z} from "zod";
+
+ const tourSchema = z.object({
+	 id: z.string(),
+	 name: z.string(),
+	 info: z.string(),
+	 image: z.string(),
+	 price: z.string()
+ })
+
+ type Tour = z.infer<typeof tourSchema>
+
+async function fetchData(url: string): Promise<Tour[]> {
+	try {
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const rawData: Tour[] = await response.json();
+		const result = tourSchema.array().safeParse(rawData)
+		if (!result.success) {
+			throw new Error(`Invalid data: ${result.error}`)
+		}
+		return result.data;
+	} catch(err) {
+		const errorMsg = error instanceof Error ? err.message : 'there was an error...';
+		console.log(errorMsg);
+		return [];
+	}
+}
+```
+
+
+## Typescript Declaration Files
+
+In TypeScript, .d.ts files, also known as declaration files, consist of type definitions, and are used to provide type for JavaScript code. They allow TypeScript to understand the shape and types of objects, functions, classes, etc, in JavaScript libraries, enabling type checking and autocompletion in TypeScript code that uses these libraries.
+
+In your `tsconfig.json`, if you remove "DOM" from the `lib` array you will immediately notice the document object(document.[something]) will throw a typescript error cause now typescript has not access to dom declaration files and its wondering what the word document means.
+
+
+If you end up installing a library that doesn't come with a declaration file, TypeScript will essentially not know anything about this library.
+One way is to follow a Github repo called [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) this has a collection of types for the most popular libraries out there that doesn't have a type declaration file.
+
+To install a type
+
+```sh
+npm install --save-dev @types/node
+```
+
+
+### tsconfig.json Configuration
+
+[tsconfig documentaion](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+
+- `include`: Set to `["src"]`. This tells TypeScript to only convert files in the `src` directory.
+- `target`: Set to `ES2020`. This is the JavaScript version that the TypeScript code will be compiled to.
+- `useDefineForClassFields`: Set to `true`. This enables the use of the `define` semantics for initializing class fields.
+- `module`: Set to `ESNext`. This is the module system for the compiled code.
+- `lib`: Set to `["ES2020", "DOM", "DOM.Iterable"]`. This specifies the library files to be included in the compilation.
+- `skipLibCheck`: Set to `true`. This makes TypeScript skip type checking of declaration files (`*.d.ts`).
+- `moduleResolution`: Set to `bundler`. This sets the strategy TypeScript uses to resolve modules.
+- `allowImportingTsExtensions`: Set to `true`. This allows importing of TypeScript files from JavaScript files.
+- `resolveJsonModule`: Set to `true`. This allows importing of `.json` modules from TypeScript files.
+- `isolatedModules`: Set to `true`. This ensures that each file can be safely transpiled without relying on other import/export files.
+- `noEmit`: Set to `true`. This tells TypeScript to not emit any output files (`*.js` and `*.d.ts` files) after compilation.
+- `strict`: Set to `true`. This enables all strict type-checking options.
+- `noUnusedLocals`: Set to `true`. This reports an error when local variables are declared but never used.
+- `noUnusedParameters`: Set to `true`. This reports an error when function parameters are declared but never used.
+- `noFallthroughCasesInSwitch`: Set to `true`. This reports an error for fall through cases in switch statements.
+
+---
+
+### Classes - Intro
+
+Classes in JavaScript are a blueprint for creating objects. They encapsulate data with code to manipulate that data. Classes in JavaScript support inheritance and can be used to create more complex data structures.
+
+A constructor in a class is a special method that gets called when you create a new instance of the class. It's often used to set the initial state of the object. The `this` keyword inside the class refers to the object that is getting created.
+
+```js
+class Book {
+  title: string;
+  author: string;
+  constructor(title: string, author: string) {
+    this.title = title;
+    this.author = author;
+  }
+}
+
+const deepWork = new Book('deep work ', 'cal newport');
+```
+
+### Classes - Instance Property / Default Property
+
+The checkedOut property in Book class is an instance property (or member variable). It's not specifically set in the constructor, so it could also be referred to as a default property or a property with a default value.
+
+```ts
+class Book {
+  title: string;
+  author: string;
+  checkedOut: boolean = false;
+  
+  constructor(title: string, author: string) {
+    this.title = title;
+    this.author = author;
+  }
+}
+
+const deepWork = new Book('deep work ', 'cal newport');
+deepWork.checkedOut = true;
+// deepWork.checkedOut = 'something else';
+```
+
+
+### Classes - ReadOnly Modifier
+
+- readonly modifier
+
+```ts
+class Book {
+  readonly title: string;
+  author: string;
+  checkedOut: boolean = false;
+  constructor(title: string, author: string) {
+    this.title = title;
+    this.author = author;
+  }
+}
+
+const deepWork = new Book('deep work ', 'cal newport');
+
+deepWork.title = 'something else';
+```
+
+### Classes - Private and Public Modifiers
+
+- private and public modifiers
+
+```ts
+class Book {
+  public readonly title: string;
+  public author: string;
+  private checkedOut: boolean = false;
+  constructor(title: string, author: string) {
+    this.title = title;
+    this.author = author;
+  }
+  public checkOut() {
+    this.checkedOut = this.toggleCheckedOutStatus();
+  }
+  public isCheckedOut() {
+    return this.checkedOut;
+  }
+  private toggleCheckedOutStatus() {
+    return !this.checkedOut;
+  }
+}
+
+const deepWork = new Book('Deep Work', 'Cal Newport');
+deepWork.checkOut();
+console.log(deepWork.isCheckedOut()); // true
+// deepWork.toggleCheckedOutStatus(); // Error: Property 'toggleCheckedOutStatus' is private and only accessible within class 'Book'.
+```
+
+### Classes - Shorthand Syntax
+
+In TypeScript, if you want to use the shorthand for creating and initializing class properties in the constructor, you need to use public, private, or protected access modifiers.
+
+```ts
+class Book {
+  private checkedOut: boolean = false;
+  constructor(public readonly title: string, public author: string) {}
+}
+```
+
+### Classes - Getters and Setters
+
+Getters and setters are special methods in a class that allow you to control how a property is accessed and modified.They are used like properties, not methods, so you don't use parentheses to call them.
+
+```ts
+class Book {
+  private checkedOut: boolean = false;
+  constructor(public readonly title: string, public author: string) {}
+  get info() {
+    return `${this.title} by ${this.author}`;
+  }
+
+  private set checkOut(checkedOut: boolean) {
+    this.checkedOut = checkedOut;
+  }
+  get checkOut() {
+    return this.checkedOut;
+  }
+  public get someInfo() {
+    this.checkOut = true;
+    return `${this.title} by ${this.author}`;
+  }
+}
+
+const deepWork = new Book('deep work', 'cal newport');
+console.log(deepWork.info);
+// deepWork.checkOut = true;
+console.log(deepWork.someInfo);
+console.log(deepWork.checkOut);
+```
+
+### Classes - Implement Interface
+
+In TypeScript, an interface is a way to define a contract for a certain structure of an object. This contract can then be used by a class to ensure it adheres to the structure defined by the interface.
+
+When a class implements an interface, it is essentially promising that it will provide all the properties and methods defined in the interface. If it does not, TypeScript will throw an error at compile time.
+
+```ts
+interface IPerson {
+  name: string;
+  age: number;
+  greet(): void;
+}
+
+class Person implements IPerson {
+  constructor(public name: string, public age: number) {}
+
+  greet() {
+    console.log(
+      `Hello, my name is ${this.name} and I'm ${this.age} years old.`
+    );
+  }
+}
+
+const hipster = new Person('shakeAndBake', 100);
+hipster.greet();
+```
+
 
