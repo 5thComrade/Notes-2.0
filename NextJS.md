@@ -477,3 +477,414 @@ The convention is to create a folder called `api` inside the `app` folder and th
 
 If you have `route.ts` and a `page.tsx` within the same route, the `route.ts` will be served by default and not the `page.tsx`.
 
+---
+#### Handling GET Request
+
+```ts
+import { comments } from "./data";
+
+export async function GET() {
+	return Response.json(comments)
+}
+```
+
+---
+#### Handling POST Request
+
+```ts
+export async function POST(request: Request) {
+	const comment = await request.json();
+	const newComment = {
+		id: comments.length + 1,
+		text: comment.text
+	}
+
+	comments.push(newComment);
+
+	return new Response(JSON.stringify(newComment), {
+		headers: {
+			"Content-Type": "application/json",
+		},
+		status: 201,
+	})
+}
+```
+
+---
+#### Dynamic Route Handlers
+
+In the comments folder created a subfolder like `[id]` in this new folder create a new `route.ts` file.
+
+```ts
+import { comments } from "../data";
+
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
+	const comment = comments.find(c => c.id === parseInt(params.id))
+	return Response.json(comment);
+}
+```
+
+---
+#### Handling PATCH Request
+
+In your dynamic route handler, add the following method
+
+```ts
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+	 const body = await request.json();
+	 const { text } = body;
+
+	 const index = comments.findIndex(comment => comment.id === parseInt(params.id));
+
+	 comments[index].text = text;
+
+	 return Response.json(comments[index])
+}
+```
+
+---
+#### Handling DELETE Request
+
+```ts
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+	 const index = comments.findIndex(comment => comment.id === parseInt(params.id));
+	 const deletedComment = comments[index];
+
+	 comments.splice(index, 1);
+
+	 return Response.json(deletedComment);
+}
+```
+
+---
+#### URL Query Parameters
+
+```ts
+import { type NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+	const searchParams = request.nextUrl.searchParams;
+	const query = searchParams.get("query");
+
+	const filteredComments = query ? comments.filter(c => c.text.includes(query)) : comments
+	
+	return Response.json(filteredComments);
+}
+```
+
+---
+#### Redirects in Route Handlers
+
+```ts
+import { redirect } from "next/navigation";
+
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
+	if (parseInt(params.id) > comments.length) {
+		redirect("/comments");
+	}
+	const comment = comments.find(c => c.id === parseInt(params.id))
+	return Response.json(comment);
+}
+```
+
+---
+#### Headers in Route Handlers
+
+HTTP headers represent the metadata associated with an API request and response.
+
+**Request Headers**
+These are sent by the client, such as a web browser, to the server. They contain essential information about the request, which helps the server understand and process it correctly.
+
+'User-Agent' which identifies the browser and operating system to the server.
+'Accept' which indicates the content types like text, video, or image formats that the client can process.
+'Authorization' header used by the client to authenticate itself to the server.
+
+**Response Headers**
+These are sent back from the server to the client. They provide information about the server and the data being sent in the response.
+'Content-Type' header which indicates the media type of the response. It tells the client what the data type of the returned content is, such as text/html for HTML documents, application/json for JSON data etc.
+
+
+```ts
+import { type NextRequest } from "next/server";
+import { headers } from "next/headers";
+
+export async function GET(request: NextRequest) {
+	const requestHeaders = new Headers(request.headers);
+	const headerList = headers();
+
+	console.log(requestHeaders.get("Authorization")); // METHOD 1
+	console.log(headerList.get("Authorization")); // METHOD 2
+	
+	return new Response("<h1>Profile API data</h1>", {
+		headers: {
+			"Content-Type": "text/html" // this is how we set response headers
+		}
+	});
+}
+```
+
+---
+
+#### Cookies in Route Handlers
+
+Cookies are small pieces of data that a server sends to a user's web browser. The browser may store the cookie and send it back to the same server with later requests.
+
+Cookies are mainly used for three purposes
+- Session management like logins and shopping carts
+- Personalization like user preferences and themes
+- Tracking like recording and analyzing user behavior.
+
+```ts
+import { type NextRequest } from "next/server";
+import { cookies } from "next/headers";
+
+export async function GET(request: NextRequest) {
+	cookies().set("resultsPerPage", "20"); // METHOD 1 for setting a cookie
+	
+	const theme = request.cookies.get("theme"); // METHOD 2 for getting a cookie
+
+	console.log(theme);
+	console.log(cookies().get("resultsPerPage")) // METHOD 1 for getting a cookie
+	
+	return new Response("<h1>Profile API data</h1>", {
+		headers: {
+			"Content-Type": "text/html",
+			"Set-Cookie": "theme=dark", // METHOD 2 for setting a cookie
+		}
+	});
+}
+```
+
+---
+
+#### Caching in Route Handlers
+
+Route Handlers are cached by default when using the GET method with the Response object in Next.js.
+
+Let's say we have a route handler that returns the current time, in development mode when we refresh the route you get the updated time.
+
+```ts
+export async function GET() {
+	return Response.json({
+		time: new Date().toLocaleTimeString(),
+	})
+}
+```
+
+When you hit the same endpoint post building the app, the time won't get updated, cause the response is cached.
+
+How to opt out of caching?
+- dynamic mode in Segment Config Option
+- Using the Request object with the GET method
+- employing dynamic functions like headers() and cookies()
+- Using any HTTP method other than GET
+
+```ts
+export const dynamic = 'force-dynamic'; // by default dynamic is auto, we setting it to force-dynamic
+
+export async function GET() {
+	return Response.json({
+		time: new Date().toLocaleTimeString(),
+	})
+}
+```
+
+---
+
+#### Middleware
+
+Middleware in NextJS is a powerful feature that offers a robust way to intercept and control the flow of requests and responses within your applications.
+
+It does this at a global level significantly enhancing features like redirection, URL rewrites, authentication, headers and cookies management, and more.
+
+To create a middleware, create a `middleware.ts` file in the src folder.
+
+Middleware allows us to specify paths where it will be active.
+- Custom matcher config
+- Conditional statements
+
+```tsx
+// THE MATCHER CONFIG APPROACH
+
+import { NextResponse, type NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+	return NextResponse.redirect(new URL("/", request.url))
+}
+
+export const config = {
+	matcher: "/profile",
+}
+```
+
+```tsx
+// CONDITIONAL STATEMENTS
+
+import { NextResponse, type NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+	if (request.nextUrl.pathname === '/profile') {
+		return NextResponse.redirect(new URL("/hello", request.url))
+	}	
+}
+```
+
+If you replace `redirect` with `rewrite` in the above example, the URL will still say `/profile` but the content will that of `/hello` 
+
+```tsx
+import { NextResponse, type NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+	const response = NextResponse.next();
+
+	const themePreference = request.cookies.get("theme");
+
+	if (!themePreference) {
+		response.cookies.set("theme", "dark"); // setting cookie if a cookie doesn't exist
+	}
+
+	response.headers.set("custom-header", "custom-value")
+
+	return response;
+}
+```
+
+---
+
+#### Rendering
+
+Rendering is the process that transforms the code you write into user interfaces.
+In Next.js, choosing the right time and place to do this rendering is vital for building performant application.
+
+#### Client-side Rendering (CSR)
+
+The method of rendering, where the component code is transformed into a user interface directly within the browser (the client), is known as client-side rendering (CSR).
+CSR quickly became the standard for SPAs, with widespread adoption.
+
+Drawbacks of CSR
+- SEO - Generating HTML that mainly contains a single div tag is not optimal for SEO, as it provides little content for search engines to index.
+- Performance - Having the browser (the client) handle all the work, such as fetching data, computing the UI, and making the HTML interactive, can slow things down. Users might see a blank screen or a loading spinner while the page loads. Each new feature added to the application increases the size of the JavaScript bundle, prolonging the wait time for users to see the UI.
+
+#### Server-side Solutions
+
+Significantly improves SEO because search engines can easily index the server-rendered content.
+Users can immediately see the page HTML content, instead of a blank screen or loading spinner.
+
+**Hydration**
+During hydration, React takes control in the browser, reconstructing the component tree in memory based on the static HTML that was served. It carefully plans the placement of interactive elements within this tree. Then, React proceeds to bind the necessary JavaScript logic to these elements.
+This involves initializing the application state, attaching event handlers for actions such as clicks and mouseovers, and setting up any other dynamic functionalities required for a fully interactive user experience.
+
+#### Static Site Generation (SSG)
+
+SSG occurs at build time, when the application is deployed on the server. This results in pages that are already rendered and ready to serve. It is ideal for content that doesn't change often, like blog posts.
+
+#### Server-Side Rendering (SSR)
+
+SSR, on the other hand, renders pages on-demand in response to user requests. It is suitable for personalized content like social media feeds, where the HTML depends on the logged-in user.
+SSR was a significant improvement over Client-Side Rendering (CSR), providing faster initial page loads and better SEO.
+
+Drawbacks of SSR
+- You have to fetch everything before you can show anything. Components cannot start rendering and then pause or "wait" while data is still being loaded. If a component needs to fetch data from a database or another source (like an API), this fetching must be completed before the server can begin rendering the page. This can delay the server's response time to the browser, as the server must finish collecting all necessary data before any part of the page can be sent to the client.
+- You have to load everything before you can hydrate anything. For successful hydration, where React adds interactivity to the server-rendered HTML, the component tree in the browser must exactly match the server-generated component tree. This means that all the JavaScript for the components must be loaded on the client before you can start hydrating any of them.
+- You have to hydrate everything before you can interact with anything. React hydrates the component tree in a single pass, meaning once it starts hydrating, it won't stop until it's finished with the entire tree. As a consequence, all components must be hydrated before you can interact with any of them.
+
+#### Suspense for SSR
+
+Suspense SSR Architecture was introduced to overcome SSR drawbacks
+
+Use the `<Suspense>` component to unlock two major SSR features:
+- HTML streaming on the server
+- Selective hydration on the client
+
+```tsx
+<Layout>
+	<Header />
+	<Sidenav />
+	<Suspense fallback={<Spinner />}>
+		<MainContent />
+	</Suspense>
+	<Footer />
+</Layout>
+```
+
+With `<Suspense>`, you don't have to fetch everything before you can show anything.
+If a particular section delays the initial HTML, it can be seamlessly integrated into the stream later.
+This is the essence of how Suspense facilitates server-side HTML streaming.
+
+**Code splitting**
+Code splitting allows you to mark specific code segments as not immediately necessary for loading, signaling your bundler to segregate them into separate `<script>` tags.
+Using `React.lazy` for code splitting enables you to separate the main section's code from the primary JavaScript bundle.
+The JavaScript containing React and the code for the entire application, excluding the main section, can now be downloaded independently by the client, without having to wait for the main section's code.
+
+By wrapping the main section within `<Suspense>`, you've indicated to React that it should not prevent the rest of the page from not just streaming but also from hydrating.
+This feature, called **selective hydration** allows for the hydration of sections as they become available, before the rest of the HTML and the JavaScript code are fully downloaded.
+
+```tsx
+import { lazy } from "react";
+const MainContent = lazy(() => import('./MainContent.tsx'))
+
+<Layout>
+	<Header />
+	<Sidenav />
+	<Suspense fallback={<Spinner />}>
+		<MainContent />
+	</Suspense>
+	<Footer />
+</Layout>
+```
+
+Thanks to **Selective Hydration**, a heavy piece of JS doesn't prevent the rest of the page from becoming interactive.
+Selective hydration offers a solution to the third issue: the necessity to "hydrate everything to interact with anything".
+React begins hydrating as soon as possible, enabling interactions with elements like the header and side navigation without waiting for the main content to be hydrated.
+This process is managed automatically by React.
+In scenarios where multiple components are awaiting hydration, React prioritizes hydration based on user interactions.
+
+Drawbacks of Suspense SSR
+- First, even though JavaScript code is streamed to the browser asynchronously, eventually, the entire code for a web page must be downloaded by the user. As applications add more features, the amount of code users need to download also grows. This leads to an important question: **should users really have to download so much data?**
+- Second, the current approach requires that all React components undergo hydration on the client-side, irrespective of their actual need for interactivity. This process can inefficiently spend resources and extend the loading times and time to interactivity for users, as their devices need to process and render components that might not even require client-side interaction. This lead to another question: **should all components be hydrated, even those that don't need interactivity?**
+- Third, in spite of servers' superior capacity for handling intensive processing tasks, the bulk of JavaScript execution still takes place on the user's device. This can slow down the performance, especially on devices that are not very powerful. This leads to another question: **should so much of the work be done on the user's device?**
+
+#### React Server Components (RSC)
+
+React Server Components (RSC) represent a new architecture designed by the React team. This approach aims to leverage the strengths of both server and client environments, optimizing for efficiency, load times, and interactivity.
+The architecture introduces a dual-component model
+- Client components
+- Server components
+
+This distinction is not based on the functionality of the components but rather on where they execute and the specific environments they are designed to interact with.
+
+**Client Components**
+Client components are the familiar React components we've been using. They are typically rendered on the client-side(CSR) but, they can also be rendered to HTML on the server (SSR), allowing users to immediately see the page's HTML content rather than a blank screen.
+Components that primarily run on the client but can also be executed once on the server as an optimization strategy.
+Client components have access to the client environment, such as the browser, allowing them to use state, effects, and event listeners to handle interactivity and also access browser-exclusive APIs like geolocation or localStorage, allowing you to build UI for specific use cases.
+In fact, the term "Client Component" doesn't signify anything new; it simply helps differentiate these components from the newly introduced Server components.
+
+**Server Components**
+Server components represent a new type of React component specifically designed to operate exclusively on the server. 
+And unlike client components, their code stays on the server and is never downloaded to the client.
+This design choice offers multiple benefits to React applications.
+- Reduced bundle sizes - Server components do not send code to the client, allowing large dependencies to remain server-side. This in-turn removes hydration step, speeding up app loading and interaction.
+- Direct access to server-side resources - By having direct access to server-side resources like databases or file systems, Server components enable efficient data fetching and rendering without needing additional client-side processing. Leveraging the server's computational power and proximity to data sources, they manage compute-intensive rendering tasks and send only interactive pieces of code to the client.
+- Enhanced Security - Server components' exclusive server-side execution enhances security by keeping sensitive data and logic, including tokens and API keys, away from the client-side.
+- Improved Data fetching - Server components enhance data fetching efficiency. Typically, when fetching data on the client-side using useEffect, a child component cannot begin loading its data until the parent component has finished loading its own. This sequential fetching of data often leads to poor performance. The main issue is not the round trips themselves, but that these round trips are made from the client to the server. Server components enable applications to shift these sequential round trips to the server side. By moving this logic to the server, request latency is reduced, and overall performance is improved, eliminating client-server waterfalls.
+- Caching - Rendering on the server enables caching of the results, which can be reused in subsequent requests and across different users. This approach can significantly improve performance and reduce costs by minimizing the amount of rendering and data fetching required for each request.
+- Faster initial page load and first contentful paint - Initial page load and First Contentful Paint(FCP) are significantly improved with Server Components. By generating HTML on the server, pages become immediately visible to users without the delay of downloading, parsing, and executing JavaScript.
+- Improved SEO - Regarding Search Engine Optimization (SEO), the server-rendered HTML is fully accessible to search engine bots, enhancing the indexability of your pages.
+- Efficient streaming - Server components allows the rendering process to be divided into manageable chunks, which are then streamed to the client as soon as they are ready. This approach allows users to start seeing parts of the page earlier, eliminating the need to wait for the entire page to finish rendering on the server.
+
+#### Server and Client Components
+
+By default, every component in a NextJS app is considered a server component.
+
+How do we differentiate a client component from a server component?
+Simply add a `console.log('Check where you see this log!')`. If you see the log in the browser console, its a client component. If you see the log in the terminal its a server component.
+
+In order to make a client component, one must add the `"use client";` directive at the top of the file. This is how we signal to React that the component(s) in this file are Client Components, that they should be included in our JS bundles so that they can re-render on the client.
+
+Client components are pre-rendered once on the server to allow the users to see the pages HTML content rather than a blank screen. 
+
+Very Good Article on React Server Components: https://www.joshwcomeau.com/react/server-components/
+
+
+#### RSC Rendering Lifecycle
+
