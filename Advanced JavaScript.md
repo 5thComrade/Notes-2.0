@@ -35,10 +35,10 @@ const obj = {
 
 ### Classes
 
-Classes are a "blueprint" of functionality.
-Defines the methods each instance of Triangle will have.
-An instance of the class can be created use the `new` keyword.
-`this` references the particular instance of the class.
+- Classes are a "blueprint" of functionality.
+- Defines the methods each instance of Triangle will have.
+- An instance of the class can be created use the `new` keyword.
+- `this` references the particular instance of the class.
 
 Class names should be UpperCamelCase
 
@@ -56,3 +56,5 @@ myTri.getArea(); // 6
 
 console.log(myTri instanceOf Triangle) // true
 ```
+
+### Constructors
