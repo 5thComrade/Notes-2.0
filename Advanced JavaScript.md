@@ -58,3 +58,24 @@ console.log(myTri instanceOf Triangle) // true
 ```
 
 ### Constructors
+
+Any method named `constructor` will be called on making a new instance
+
+- We can do validation of the inputs
+- Assign properties
+
+```js
+class Triangle {
+ constructor(a, b) {
+   this.a = a;
+   this.b = b;
+ }
+
+ getArea() {
+    return (this.a * this.b) / 2; 
+ }
+}
+
+let myTri = new Triangle(3, 5) // <-- calls the constructor
+```
+
