@@ -79,3 +79,35 @@ class Triangle {
 let myTri = new Triangle(3, 5) // <-- calls the constructor
 ```
 
+### Methods
+
+Functions placed in a class are methods (formally, instance methods)
+They have access to properties of the object with `this`.
+
+### Inheritance
+
+```js
+class ShyTriangle extends Triangle {
+  describe() {
+    console.log('this is a shy trinagle which inherits from Triangle')
+  }
+}
+```
+
+### Super Keyword
+
+```js
+class ColorTriangle extends Triangle {
+  constructor(a, b, color) {
+    super(a, b); // calls the parent constructor
+    this.color = color;
+  }
+
+  describe() {
+    return `Area is ${super.getArea()} and color is ${this.color}`;
+  }
+}
+```
+
+### Static Properties
+
