@@ -111,3 +111,26 @@ class ColorTriangle extends Triangle {
 
 ### Static Properties
 
+Modern JS also offers "static properties", where individual pieces of data are on the class, not on instances.
+
+```js
+class Cat {
+  constructor(name, breed) {
+    this.name = name;
+    this.breed = breed;
+  }
+
+  static species = "feline catus";
+}
+
+console.log(Cat.species); // directly accessible from the class hence you will see feline catus
+
+const cat1 = new Cat("Tom", "Some Breed");
+
+console.log(cat1.species); // this will log undefined cause static properties are not available in class instances
+```
+
+### Static methods
+
+
+
