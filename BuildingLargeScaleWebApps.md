@@ -70,8 +70,81 @@ export default function App() {
            </button>
          </div>
       </IntlProvider>
+   );
 }
 ```
 
 #### Dynamic loading
+
+In the code example above, we’re directly importing all language files in 
+the root of our app, which can sometimes result in having all of these 
+files included in the main bundle.
+
+Dynamically importing locales
+
+```jsx
+import React, { useState, useEffect } from "react";
+import { 
+ IntlProvider, 
+ FormattedMessage
+} from "react-intl";
+
+export function App() {
+  const [locale, setLocale] = useState("en");
+  const [messages, setMessages] = useState({});
+
+  useEffect(() => {
+    /*
+     Dynamically import required translation file
+     based on locale
+    */
+
+    const loadMessages = async () => {
+      switch (locale) {
+        case "en":
+          await import(
+            "./locales/en.json"
+          ).then((m) => setMessages(m.default));
+          break;
+  
+        case "es":
+          await import(
+            "./locales/es.json"
+          ).then((m) => setMessages(m.default));
+          break;
+  
+        // and so on...
+      }
+    };
+
+    loadMessages();
+  }, [locale])
+
+  return (
+     <IntlProvider
+       locale={locale}
+       messages={messages}
+      >
+        <FormattedMessage id="greeting" />
+
+        <div>
+           <button onClick={() => setLocale("en")}>
+             English
+           </button>
+           <button onClick={() => setLocale("es")}>
+             Español
+           </button>
+           <button onClick={() => setLocale("fr")}>
+             Français
+           </button>
+           <button onClick={() => setLocale("de")}>
+             Deutsch
+           </button>
+         </div>
+      </IntlProvider>
+   );
+}
+```
+
+#### Handling plurals across languages
 
