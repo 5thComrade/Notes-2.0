@@ -148,3 +148,110 @@ export function App() {
 
 #### Handling plurals across languages
 
+When building a web application for a global audience, it’s important to 
+recognize that simple pluralization rules, like adding an ‘s’ to denote 
+more than one in English, don’t apply universally. Different languages 
+have distinct rules for plurals, and some can be more complex than 
+others. For example, the Arabic language often has different plural rules 
+for quantifying zero, one, two, few, many, etc.
+
+In en.json file
+
+```json
+{
+ "itemCountMessage": "{itemCount, plural, =0 
+ {No items} one {1 item} other {You have 
+ {itemCount} items}}"
+}
+```
+
+The above syntax is ICU message syntax that builds on [ICU Message Formatting](https://unicode-org.github.io/icu/userguide/format_parse/messages/) - a standardized way to build and format messages in software, especially in the context of internationalization and localization.
+
+```jsx
+import { FormattedMessage } from 'react-intl';
+
+function PluralComponent({ itemCount }) {
+  return (
+   <FormattedMessage
+     id="itemCount"
+     values={{ itemCount }}
+   />
+ );
+}
+```
+
+When itemCount is 0 we'll see "No items", when item count is 1 we'll see "1 item" and if the value is > 1 we see "You have 2 items"
+
+If we are maintianing Arabic 
+
+```json
+"itemCountMessage": "{itemCount, plural, =0 {لیس لدیك أي عناصر} one {لدیك عنصر واحد}
+two {لدیك عنصرین} few {{itemCount} عناصر دیك}
+many {لدیك العدید من العناصر} other
+{{itemCount} عنصرًا}
+```
+
+In Arabic the grammer is different when saying items between 3-10(few) and 11-99(many)
+
+#### Format dates, times, and numbers
+
+Dates, times, and numbers often have different formats across locales. As 
+a result, we should always make use of localization libraries or built-in 
+language features available in our programming language to ensure 
+accurate and localized formatting of dates, times, and numbers.
+
+Formatting dates with the Intl JavaScript object
+
+```js
+const date = new Date();
+
+const options = {
+ year: "numeric",
+ month: "long",
+ day: "numeric",
+};
+
+const formattedDate = new Intl.DateTimeFormat(
+  "en-US",
+  options,
+).format(date);
+
+console.log(formattedDate);
+// Output: June 30, 2023
+
+const number = 1004580.89;
+
+const formattedNumberDE = new Intl.NumberFormat(
+  "de-DE",
+).format(number);
+const formattedNumberUS = new Intl.NumberFormat(
+  "en-US",
+).format(number);
+
+// Output: 1.004.580,89
+console.log(formattedNumberDE);
+
+// Output: 1,004,580.89
+console.log(formattedNumberUS);
+```
+
+react-intl library gives FormattedDate component
+
+```jsx
+import { FormattedDate } from "react-intl";
+
+// 01/15/2026
+<FormattedDate
+  value={new Date()}
+  locale="en-US"
+/>
+```
+
+In addition to dates, react-intl also offers components like 
+FormattedTime and FormattedNumber for localizing times and numbers, 
+respectively. Here’s an example of using the FormattedNumber
+component to format numbers differently between the United States and 
+Germany
+
+#### Consider Right-to-Left (RTL) Languages
+
