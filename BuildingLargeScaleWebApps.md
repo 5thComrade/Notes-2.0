@@ -255,3 +255,86 @@ Germany
 
 #### Consider Right-to-Left (RTL) Languages
 
+In addition to supporting different languages, it’s essential to consider the 
+layout, CSS styles, and text alignment for languages that are written from 
+right to left (RTL), like Arabic, Hebrew, and Urdu.
+
+- Text direction (dir)
+  HTML contains a dir property that we can utilize to handle RTL text. By setting the dir property to rtl (or auto, which lets the user agent decide), we can ensure that text and elements within our application are correctly aligned for RTL languages.
+
+```jsx
+<p dir="ltr">
+ This paragraph is in English and correctly
+ goes left to right.
+</p>
+
+<p dir="rtl">ن الیمین إلى الیسار</p>
+```
+
+- Text align (text-align)
+  When setting text alignment with the text-align CSS property, there exists the convenience of using values like start and end in addition to the traditionally used values of left and right.
+
+**Font**
+
+When designing for RTL languages, font selection becomes important. The fonts we select should not only be visually appealing and align with our brand but also adequately support the characters and nuances of the RTL scripts. Some fonts might lack certain characters or have incomplete support, which could lead to a broken or inconsistent user experience.
+
+It’s always best practice to provide a list of fallback fonts in our CSS. If the primary font fails to load or a particular character isn’t supported, the browser will attempt to use the next font in the list.
+
+```css
+/* Default font stack */
+body {
+ font-family: 'Noto', 'Monotype SST';
+}
+
+/* Font stack for Arabic language content (RTL) */
+body[lang="ar"] {
+ font-family: 'Noto Naskh Arabic', 'Tahoma';
+}
+```
+
+**Layout**
+
+When working with RTL languages, we shouldn’t only be concerned about text direction and alignment. Other CSS properties, like margin, padding, and positioning, can also be affected by the change in directionality. 
+
+As an example, assume we had a piece of text written in English and positioned alongside an icon on the left side in an LTR context. To have some spacing between the icon and the text, we can use the standard margin-right CSS property to achieve this.
+
+```html
+<div class="icon-text-ltr">
+ <img
+   src="icon.png"
+   alt="Icon"
+   class="icon-ltr"
+ />
+ <p>
+   This is some English text with an icon on
+   the left.
+ </p>
+</div>
+```
+
+But margin-right will also get applied when the text is Right to Left, leaving no space between the text and the icon.
+
+The most effective approach is to use [CSS logical properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Logical_properties_and_values)
+
+```css
+.icon-text-ltr {
+ display: flex;
+ align-items: center;
+}
+
+.icon-ltr {
+ width: 20px;
+
+ /* 
+   Margin applied after the icon 
+   in the inline direction 
+ */
+ margin-inline-end: 10px;
+}
+```
+
+Now, regardless of whether the text direction is LTR or RTL, the margin-inline-end ensures that the margin is applied between the icon and the text, which helps make the layout remain consistent across different languages and text directions.
+
+---
+
+### Organizing Code
