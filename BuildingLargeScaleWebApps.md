@@ -1,6 +1,6 @@
-## Bulding Large Scale Web Apps
+# Bulding Large Scale Web Apps
 
-### Internationalization
+## Internationalization
 
 As the internet continues to connect people all over the world, it becomes 
 increasingly important to design and develop web applications that cater 
@@ -337,4 +337,4 @@ Now, regardless of whether the text direction is LTR or RTL, the margin-inline-e
 
 ---
 
-### Organizing Code
+## Organizing Code
