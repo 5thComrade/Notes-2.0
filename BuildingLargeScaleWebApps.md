@@ -386,3 +386,69 @@ The following folders would have responsibilities as follows:
   Contents: README.md for each significant part of the app, architecture diagrams, API usage guides, etc.
 
 ### The src/ directory
+
+The src/ directory, often the heart of any web application, is where our source code lives. Its structure is crucial because it determines how easy it is for developers to navigate through the code and understand the application’s architecture.
+
+```sh
+src/
+  components/
+  pages/
+  hooks/
+  services/
+  store/
+  utils/
+  assets/
+  constants/
+  types/
+```
+
+In the above src/ directory structure:
+
+- components/ are all reusable components organized by features 
+or domains.
+- pages/ are top-level components representing individual routes 
+or views in our application.
+- hooks/ contain the custom hooks that encapsulate reusable logic, 
+such as data fetching or state management.
+- services/ represent external services, such as API clients or 
+other integrations.
+- store/ contains the centralized state management setup, 
+including actions, reducers, and middleware (e.g., for Redux).
+- utils/ contains utility functions and common helper modules.
+- assets/ represent static assets like images, icons, fonts, and 
+styles.
+- constants/ contain constants like API endpoints, configuration 
+values, or enums.
+- types/ contain shared type definitions and interfaces For a 
+TypeScript codebase.
+
+### Naming conventions
+
+Naming conventions in a codebase ensure consistency, clarity, and predictability, making it easier for other developers to understand the purpose and function of files, directories, and variables at a glance. 
+
+Here’s one helpful way of naming files within certain directories:
+
+- Components: Use UpperCamelCase for component names and their respective file names (e.g., Header.js).
+- Hooks: Prefix custom hooks with use and follow camelCase naming (e.g., useFetchData.js)
+- Services: Use camelCase and include the service or domain name (e.g., authService.js).
+- Utilities: Use camelCase and describe the utility’s purpose (e.g., arrayHelpers.js).
+- Styles: Use the .module.css or .module.scss extension for CSS or SCSS files, respectively, when using CSS Modules (e.g., Header.module.css).
+
+### Barrel exports
+
+Barrel exports are a design pattern in JavaScript and TypeScript projects that aggregate many exports from a module into a single convenient module. This pattern is useful for simplifying imports in other parts of an application.
+
+A barrel export is essentially an index.js or index.ts file in a directory that re-exports things from other files, allowing for a more consolidated import.
+
+```sh
+components/
+  Input.tsx
+  Button.tsx
+  index.tsx # this file re-exports all the components in the components folder
+```
+
+Barrel exports allow for cleaner, consolidated imports and can sometimes make moving files easier since we’d only have to update the barrel index.js file.
+
+---
+
+## Personalization and A/B Testing
