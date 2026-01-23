@@ -132,5 +132,83 @@ console.log(cat1.species); // this will log undefined cause static properties ar
 
 ### Static methods
 
+JS gives us "static methods", wehere the method is called on a Class, not an object - therefore it cannot have access to individual object attributes
+
+```js
+class CatWithStaticMethod {
+   constructor(fname) {
+     this.fname = fname;
+   }
+
+   static myStaticMethod() {
+     console.log("my static method this: ", this); // this inside static methods refers to the class itself
+   }
+
+   myMethod() {
+      console.log("my method this: ", this);
+   }
+}
+
+const newCat = new CatWithStaticMethod("Tom");
+newCat.myMethod(); // logs the instance
+CatWithStaticMethod.myStaticMethod(); // logs the class CatWithStaticMethod
+```
+
+**What are the use cases for static methods?**
+
+We are aware of the Math class in JavaScript, where we do operations like Math.random(), Math.sqrt() etc. What we never do is instantiate an object using the Math class, we simply class the static methods in the Math class for our operations. Well thats a use case of static methods.
+
+```js
+class MyMath {
+  constructor() {
+    throw new Error("MyMath cannot be instantiated.")    
+  }
+
+  static add(a, b) {
+    return a + b;
+  }
+}
+```
+
+Another use case for static methods is, it can be used as factory functions/methods.
+
+A factory function in JavaScript is a function that creates and returns a new object without using the new keyword
+
+```
+class Cat {
+  constructor(name, breed) {
+    this.name = name;
+    this.breed = breed;
+  }
+
+  static createStrayCat() {
+    return new Cat(`${Date.now()}`, "unknown")
+  }
+
+  meow() {
+    console.log(`${this.name} says meow!`)
+  }
+}
+
+const strayCat = Cat.createStrayCat(); // now we created a new object without using the new keyword.
+```
+
+### Getters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
