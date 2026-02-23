@@ -211,8 +211,10 @@ class Circle {
 }
 
 const circle = new Circle(5);
-console.log(circle.diameter); // 10
+console.log(circle.diameter); // 10 - If you look we treat diameter as a property and not a method, we do not use parenthesis 
 ```
+
+### Setters
 
 
 
