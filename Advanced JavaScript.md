@@ -4,7 +4,7 @@
 
 ```js
 const obj1 = {};
-const obj2 = new Object(); // samr thing
+const obj2 = new Object(); // same thing
 ```
 
 Properties that don't exist on an object always return `undefined`
@@ -36,7 +36,7 @@ const obj = {
 ### Classes
 
 - Classes are a "blueprint" of functionality.
-- Defines the methods each instance of Triangle will have.
+- Defines the methods each instance of Class will have.
 - An instance of the class can be created use the `new` keyword.
 - `this` references the particular instance of the class.
 
@@ -132,7 +132,7 @@ console.log(cat1.species); // this will log undefined cause static properties ar
 
 ### Static methods
 
-JS gives us "static methods", wehere the method is called on a Class, not an object - therefore it cannot have access to individual object attributes
+JS gives us "static methods", where the method is called on a Class, not an object - therefore it cannot have access to individual object attributes
 
 ```js
 class CatWithStaticMethod {
@@ -156,7 +156,7 @@ CatWithStaticMethod.myStaticMethod(); // logs the class CatWithStaticMethod
 
 **What are the use cases for static methods?**
 
-We are aware of the Math class in JavaScript, where we do operations like Math.random(), Math.sqrt() etc. What we never do is instantiate an object using the Math class, we simply class the static methods in the Math class for our operations. Well thats a use case of static methods.
+We are aware of the Math class in JavaScript, where we do operations like Math.random(), Math.sqrt() etc. What we never do is instantiate an object using the Math class, we simply use the static methods in the Math class for our operations. Well thats a use case of static methods.
 
 ```js
 class MyMath {
@@ -195,6 +195,24 @@ const strayCat = Cat.createStrayCat(); // now we created a new object without us
 
 ### Getters
 
+JavaScript provides special methods, termed "getters" and "setters", which allow you to define the ways to retrive or change the values of object properties respectively.
+
+Getters allow you to retrieve the value of an object's property
+
+```js
+class Circle {
+   constructor(radius) {
+      this.radius = radius;
+   }
+
+   get diameter() {
+      return this.radius * 2;
+   }
+}
+
+const circle = new Circle(5);
+console.log(circle.diameter); // 10
+```
 
 
 
