@@ -28,7 +28,7 @@ this references 'this object'
 const obj = {
   a: 2,
   logValue: function() {
-    console.log("value of a: ", this.a);
+    console.log("value of a: ", this.a); // value of a: 2
   }
 }
 ```
