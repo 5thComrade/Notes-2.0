@@ -107,6 +107,7 @@ myTri.getArea(); // 6
 
 console.log(myTri instanceOf Triangle) // true
 ```
+---
 
 ### Constructors
 
