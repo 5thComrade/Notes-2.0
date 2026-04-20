@@ -20,6 +20,8 @@ console.log(o1[1]); // will log goodbye
 o2[true] = "boolean" // same as o2["true"]
 ```
 
+---
+
 ### this
 
 this references 'this object'
@@ -32,6 +34,55 @@ const obj = {
   }
 }
 ```
+
+#### this in Regular functions and Arrow functions
+
+Regular Functions (Dynamic Scope)
+
+- Key Characteristic: this is defined by how the function is called.
+
+- Best for: Object methods or functions that need to be "re-bound" to different contexts.
+
+The Trap: They "lose" their context when used as callbacks (like in setTimeout or .map()).
+
+```js
+const dashboard = {
+  user: "Admin",
+  // Method using a regular function
+  showUser: function() {
+    console.log(this.user); 
+    
+    // The "Lost Context" problem
+    setTimeout(function() {
+       console.log(this.user); // Output: undefined
+    }, 100);
+  }
+};
+```
+
+Arrow Functions (Lexical Scope)
+
+- Key Characteristic: this is defined by where the function is written.
+
+- Best for: Callbacks, simple logic, and keeping the parent's context alive.
+
+The Trap: Cannot be used as constructors (with new) and don't have an arguments object.
+
+```js
+const dashboard = {
+  user: "Admin",
+  // Method using arrow function for callback
+  showUser: function() {
+    console.log(this.user); 
+
+    // Inherits 'this' from showUser
+    setTimeout(() => {
+       console.log(this.user); // Output: "Admin"
+    }, 100);
+  }
+};
+```
+---
 
 ### Classes
 
