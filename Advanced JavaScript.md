@@ -82,6 +82,81 @@ const dashboard = {
   }
 };
 ```
+
+Better example
+
+For a regular function, the value of this is not set when you write the function; it is determined at the moment the function is called.
+
+The Analogy: Imagine a "Rental Car." The "owner" of the car changes depending on who is currently driving it. If Alice is driving, this is Alice. If Bob takes over, this is Bob.
+
+```js
+const user = {
+  name: "Alex",
+  greet: function() {
+    console.log("Hello, " + this.name);
+  }
+};
+
+user.greet(); // Output: Hello, Alex (The 'user' called it)
+```
+
+For an arrow function, the value of this is decided based on where the function is written in your code. It "inherits" this from its surrounding environment (the parent scope).
+
+The Analogy: Imagine a "Family Heirloom." No matter who is holding the heirloom or where they take it, the "owner" (the family name) stays the same because of where the heirloom originated.
+
+Inside a setTimeout, a regular function loses its connection to your object because the timer is calling the function, not you. Arrow functions solve this because they "remember" the this from the line of code where you created them.
+
+```js
+const user = {
+  name: "Alex",
+  greet: () => {
+    console.log("Hello, " + this.name);
+  }
+};
+
+user.greet(); // Output: Hello, undefined (or empty)
+```
+
+Now you may think isn't the object user the surrounding of the arrow function? Why didn't it look at the surrounding and go outside the curly braces?
+
+Let us understand scope
+
+In JavaScript, { } curly braces do not always create a "scope."
+
+When you create an object like const user = { ... }, you are defining a data structure, not a new scope
+- Functions create scope.
+- Classes create scope.
+- Objects do not.
+
+When you write an arrow function inside an object literal, the "surrounding environment" isn't the object itself—it's whatever is outside the object (usually the Global Window or the Module).
+
+**Test your knowledge**
+
+What will happen in this case?
+
+```js
+const parentArrow = () => {
+  setTimeout(() => {
+    console.log('Name: ', this.name)
+  }, 1000);
+}
+
+function regularFunc() {
+  this.name = "Antony"
+  
+  return parentArrow()
+}
+
+regularFunc()
+```
+
+The result of your code will be: `Name: undefined`
+
+Remember: Arrow functions do not care who calls them or where they are called. They only care about where they were defined.
+- `parentArrow` was defined in the Global Scope (the top level of your script).
+- Because it was born in the Global Scope, its this is locked to the Global Object (the Window) the moment you wrote it.
+
+
 ---
 
 ### Classes
