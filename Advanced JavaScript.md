@@ -163,7 +163,7 @@ Remember: Arrow functions do not care who calls them or where they are called. T
 
 - Classes are a "blueprint" of functionality.
 - Defines the methods each instance of Class will have.
-- An instance of the class can be created use the `new` keyword.
+- An instance of the class can be created using the `new` keyword.
 - `this` references the particular instance of the class.
 
 Class names should be UpperCamelCase
@@ -343,17 +343,32 @@ console.log(circle.diameter); // 10 - If you look we treat diameter as a propert
 
 ### Setters
 
+Allows you to set the value of an object's property.
 
+```js
+class Circle {
+  constructor(radius) {
+    this._radius = radius; // this is a way of telling another developer this is an internal variable. Please don't change it directly from outside the class. Use a proper method instead
+  }
 
+  // Setter for the radius, this is the proper method to set the value of _radius
+  set radius(value){
+    if (value < 0) {
+      throw new Error("Radius cannot be negative");
+    } else {
+      this._radius = value; // this is the proper way to set the internal variable
+    }
+  }
+}
 
+const circle = new Circle(5);
+circle.radius = -3; // Error: Radius cannot be negative. Here we are not calling the internal variable _radius, here we are calling the setter radius and trying to set its value to -3
+circle._radius = -5; // This will set the internal _radius to -5, but the underscore is the only way of telling developers DON'T DO IT!
+```
 
+Setter can be very useful for validation and to make the constructor shorter.
 
-
-
-
-
-
-
+### Public Fields
 
 
 
