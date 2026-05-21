@@ -418,3 +418,5 @@ const cat = new Cat("Tom", "feline");
 console.log('cat: ', cat)
 ```
 
+### Private Fields
+
