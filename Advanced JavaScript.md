@@ -370,7 +370,51 @@ Setter can be very useful for validation and to make the constructor shorter.
 
 ### Public Fields
 
+Private instance class fields provide a way to maintain encapsulation and not allow external access.
 
+```ts
+class MyClass {
+  publicField = "Public Field"; // these lines are called class fields same as static variables
 
+  #privateField = "Private Field";
 
+  getPrivateField() {
+    return this.#privateField;
+  }
+}
+
+const instance = new MyClass();
+console.log(instance.publicField); // 'Public Field'
+console.log(instance.getPrivateField()); // 'Private Field'
+console.log(instance.#privateField()); // Error
+```
+
+The public class fields are available in the instance or the object. If you log the instance you'd see the public field in the object.
+
+If we want private fields, follow the syntax of naming the variable with `#` at the start.
+
+So why not use the constructor instead? Use the public field to store default values so the constructor looks clean.
+
+You can define public class fields without any values and they will be set to undefined until the value gets set in the constructor.
+
+So defining class fields at the top of the class makes it clear for anyone looking at the class to identify all the fields of the class instance.
+
+```ts
+class Cat {
+    static numOfCats = 0
+
+    name;
+    breed;
+    noOfLegs = 4;
+
+    constructor(name, breed) {
+        this.name = name;
+        this.breed = breed;
+    }
+}
+
+const cat = new Cat("Tom", "feline");
+
+console.log('cat: ', cat)
+```
 
