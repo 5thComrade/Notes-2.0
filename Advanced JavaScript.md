@@ -420,3 +420,38 @@ console.log('cat: ', cat)
 
 ### Private Fields
 
+Private instance class fields provide a way to maintain encapsulation and not allow external access.
+
+Add `#` in front of the field name and it becomes a private field.
+
+### Private Methods
+
+We can also use the `#` symbol to define private methods in the class
+
+```tsx
+class MyClass {
+  #privateMethod() {
+     console.log("Private method called!!);
+  }
+}
+```
+
+### Static Initialization Blocks
+
+When javascript firsts load this class(see's this class) the logic inside the static initialization block runs. It just runs once. There is no need to create an instance of this class the code will run the moment JavaScript see's this class. If you create multiple instances of this class, the code is not going to run, cause it runs only once when JavaScript first loads the class.
+
+```ts
+class MyClass {
+  static {
+    console.log('class is loaded!');
+  }
+}
+```
+
+If you want to run some logic to run to initialize anything in the class we can use this static initialization block to do it. `this` inside this block referrs to the Class itself.
+
+---
+
+### This keyword
+
+
