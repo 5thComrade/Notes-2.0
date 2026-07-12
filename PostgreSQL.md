@@ -76,3 +76,24 @@ SELECT UPPER(CONCAT(name, ', ', country)) AS location FROM cities;
 ```
 
 ---
+
+#### Filtering rows with "WHERE"
+
+```sql
+SELECT name, area FROM cities WHERE area > 4000
+```
+
+Comparison Math Operators
+
+```
+=
+>
+<
+>=
+<=
+<> - Are the values not equal
+!= - Are the values not equal
+BETWEEN - Is the value between two other values?
+IN - Is the value present in a list?
+NOT IN - Is the value not present in a list?
+```
