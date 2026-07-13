@@ -97,3 +97,70 @@ BETWEEN - Is the value between two other values?
 IN - Is the value present in a list?
 NOT IN - Is the value not present in a list?
 ```
+
+Compound WHERE clauses
+
+```sql
+SELECT name, area FROM cities WHERE area BETWEEN 2000 AND 4000;
+```
+
+```sql
+SELECT name, area FROM cities WHERE name IN ('Delhi', 'Shanghai');
+```
+
+```sql
+SELECT name, area FROM cities WHERE name NOT IN ('Delhi', 'Shanghai');
+```
+
+```sql
+SELECT 
+  name, area 
+FROM 
+  cities 
+WHERE 
+  name NOT IN ('Delhi', 'Shanghai') AND area != 8223;
+```
+
+```sql
+SELECT 
+  name, area 
+FROM 
+  cities 
+WHERE 
+  name NOT IN ('Delhi', 'Shanghai') OR area = 3043;
+```
+
+Calculations in WHERE clauses
+
+```sql
+SELECT 
+  name, population / area AS population_density
+FROM 
+  cities 
+WHERE 
+  population / area > 6000;
+```
+
+---
+
+#### Updating Rows
+
+```sql
+UPDATE 
+  cities
+SET 
+  population = 39505000
+WHERE 
+  name = 'Tokyo';
+```
+
+---
+
+#### Deleting Rows
+
+```sql
+DELETE FROM cities WHERE name = 'Tokyo';
+```
+
+---
+
