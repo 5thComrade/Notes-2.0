@@ -170,3 +170,11 @@ Primary Key - Uniquely identifies a record in a particular table
 
 Foreign Key - Identifies a record(usually in another table) that this row is associated with
 
+#### Auto Generated ID's
+
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50)
+);
+```
