@@ -178,3 +178,13 @@ CREATE TABLE users (
   name VARCHAR(50)
 );
 ```
+
+#### How to create a foreign key column
+
+```sql
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  user_id INTEGER REFERENCES users(id)
+);
+```
