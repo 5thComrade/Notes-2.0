@@ -164,3 +164,9 @@ DELETE FROM cities WHERE name = 'Tokyo';
 
 ---
 
+#### Primary and Foreign Key
+
+Primary Key - Uniquely identifies a record in a particular table
+
+Foreign Key - Identifies a record(usually in another table) that this row is associated with
+
