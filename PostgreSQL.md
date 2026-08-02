@@ -227,6 +227,14 @@ CREATE TABLE photos (
 );
 ```
 
+**On Delete Set Null**
 
+```sql
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  user_id INTEGER REFERENCES new_users(id) ON DELETE SET NULL
+);
+```
 
-
+---
