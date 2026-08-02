@@ -188,3 +188,22 @@ CREATE TABLE photos (
   user_id INTEGER REFERENCES users(id)
 );
 ```
+
+#### Quick look into Join statements
+
+```sql
+SELECT * FROM photos 
+JOIN users ON users.id = photos.user_id;
+```
+
+#### Foreign Key Constraints Around Insertion
+
+- We insert a photo that is tied to a user that exits - Everything works Ok
+- We insert a photo that refers to a user that doesn't exist - An error, you will not be able to run the INSERT query cause of foreign key constraint
+- We insert a photo that isn't tied to any user - We will use NULL for the user_id if we have a scenario where user_id is not required.
+
+```sql
+INSERT INTO photos (url, user_id)
+VALUES ('http://daily.jpg', NULL);
+```
+
