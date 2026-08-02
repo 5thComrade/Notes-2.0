@@ -207,3 +207,26 @@ INSERT INTO photos (url, user_id)
 VALUES ('http://daily.jpg', NULL);
 ```
 
+#### Foreign Key Constraints Around Deletions
+
+Imagine we have a few records in the photos table referencing user with id 1. **What happens if we delete user with id 1 in the users table?**
+
+- On Delete Restrict - You won't be able to delete user with id 1 cause its referenced in the photos table. You will get a foreign key constraint error.
+- On Delete No Action -
+- On Delete Cascade - Delete the user and the photos associated to the user
+- On Delete set Null - Delete the user and set user_id as NULL in the photo's table
+- On Delete set Default - Set the user_id of the photo to a default value, if one is provided
+
+**On Delete Cascade**
+
+```sql
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(200),
+  user_id INTEGER REFERENCES new_users(id) ON DELETE CASCADE
+);
+```
+
+
+
+
