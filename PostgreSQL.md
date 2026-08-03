@@ -416,15 +416,78 @@ FROM comments
 JOIN users ON users.id = comments.user_id;
 ```
 
-During joins the database makes a temporary table matching the rows from different tables and then runs the SELECT on that temporary table.
+- Table order between FROM and JOIN frequently makes a difference
+- We must give context if column name collide - like the example below
 
-Now that we have id column in both the comments and users table, if we do a SELECT id, postgres will throw an error, cause it doesn't know which id you asking for.
+  During joins the database makes a temporary table matching the rows from different tables and then runs the SELECT on that temporary table.
 
-To fix this we need to SELECT id a bit different
+  Now that we have id column in both the comments and users table, if we do a SELECT id, postgres will throw an error, cause it doesn't know which id you asking for.
 
-```sql
-SELECT comments.id, contents, username
-FROM comments
-JOIN users ON users.id = comments.user_id;
-```
+  To fix this we need to SELECT id a bit different
 
+  ```sql
+  SELECT comments.id AS comment_id, photos.id AS photo_id, contents, url
+  FROM comments
+  JOIN photos ON photos.id = comments.photo_id;
+  ```
+- Tables can be renamed us AS keyword
+
+  ```sql
+  SELECT c.id AS comment_id, photos.id AS photo_id, contents, url
+  FROM comments AS c
+  JOIN photos ON photos.id = c.photo_id;
+  ```
+
+Just JOIN
+
+There is a problem with using just JOIN in our queries, if there is row from the source table that doesn't match with a related table, then that row gets dropped from the overall result set.
+
+If we have a photo in the photos table where user_id is NULL, then there won't be a relation in the users table for that row, so in the final temporary table created with JOIN, that 
+particular photo will be removed.
+
+#### Four Kinds of Joins
+
+- **Inner Join**
+
+  ```sql
+  SELECT url, username
+  FROM photos AS p
+  JOIN users AS u ON u.id = p.user_id;
+  ```
+
+  Whenever there are rows that don't matchup to a row in the other table, that row is going to be dropped from the result set.
+
+- **Left Outer Join**
+
+  ```sql
+  SELECT url, username
+  FROM photos AS p
+  LEFT JOIN new_users AS u ON u.id = p.user_id;
+  ```
+
+  A SQL operation that retrieves all records from the left table and the matching records from the right table. If a row in the left table does not have a match in the
+  right table, the resulting columns from the right table will display NULL values.
+  
+- **Right Outer Join**
+
+  ```sql
+  SELECT url, username
+  FROM photos AS p
+  RIGHT JOIN new_users AS u ON u.id = p.user_id;
+  ```
+
+  A SQL RIGHT JOIN returns all records from the right table and only the matching records from the left table. If there is no match in the left table,
+  the result shows NULL for the left table's columns.
+  All the rows on the right hand side table are included backfilled with NULL's and all the non-matching records from the left hand side table are dropped.
+  
+- **Full Join**
+
+  ```sql
+  SELECT url, username
+  FROM photos AS p
+  FULL JOIN new_users AS u ON u.id = p.user_id;
+  ```
+
+  A database command that returns all records from both tables, combining matched rows and placing NULL values where there is no match.
+
+---
