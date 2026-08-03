@@ -491,3 +491,24 @@ particular photo will be removed.
   A database command that returns all records from both tables, combining matched rows and placing NULL values where there is no match.
 
 ---
+
+We can run filters on the imaginary table's created using JOIN's using WHERE
+
+```sql
+SELECT url, contents
+FROM comments
+JOIN photos ON photos.id = comments.photo_id
+WHERE photos.user_id = comments.user_id;
+```
+
+#### Three Way Joins
+
+```sql
+SELECT url, contents, username
+FROM comments
+JOIN photos ON photos.id = comments.photo_id
+JOIN users ON users.id = comments.user_id AND users.id = photos.user_id;
+```
+
+---
+
