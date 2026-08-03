@@ -512,3 +512,51 @@ JOIN users ON users.id = comments.user_id AND users.id = photos.user_id;
 
 ---
 
+#### GROUP BY
+
+```sql
+SELECT user_id
+FROM comments
+GROUP BY user_id;
+```
+
+In the above sql, GROUP BY will find the set of all unique user_id's.
+
+Take each row and assign it to a group based on its user_id.
+
+After grouping, the only column available for selection is the grouped column itself. If you try to access any other column, we'd see an error. We need aggregate functions to
+access other columns.
+
+#### Aggregate Functions
+
+- COUNT() - Returns the number of values in a group of values
+
+  ```sql
+  SELECT COUNT(id) FROM comments; -- returns the number of id's
+  ```
+  
+- SUM() - Finds the sum of a group of numbers
+
+  ```sql
+  SELECT SUM(id) FROM comments;
+  ```
+  
+- AVG() - Finds the average of a group of numbers
+
+  ```sql
+  SELECT AVG(id) FROM comments;
+  ```
+  
+- MIN() - Returns the minimum value from a group of numbers
+
+  ```sql
+  SELECT MIN(id) FROM comments;
+  ```
+  
+- MAX() - Returns the maximum value from a group of numbers
+
+  ```sql
+  SELECT MAX(id) FROM comments;
+  ```
+
+
