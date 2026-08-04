@@ -559,4 +559,20 @@ access other columns.
   SELECT MAX(id) FROM comments;
   ```
 
+**If we use aggregate functions while we use GROUP BY, it will get applied only to the sub-groups created by GROUP BY**
+
+```sql
+SELECT user_id, COUNT(id) AS num_comments_created
+FROM comments
+GROUP BY user_id;
+```
+
+In the above query, we can't access id directly but we can use aggregate functions on id and get its value. The response of the above query is a table of 2 columns - unique user id's on the left and the number of comments each user created after the table is grouped into sub-groups.
+
+**When we do a COUNT on a column, the NULL values are not included - To fix it we can use COUNT(*)**
+
+```sql
+SELECT COUNT(*) FROM photos;
+```
+
 
