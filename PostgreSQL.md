@@ -475,10 +475,8 @@ particular photo will be removed.
   FROM photos AS p
   RIGHT JOIN new_users AS u ON u.id = p.user_id;
   ```
-
-  A SQL RIGHT JOIN returns all records from the right table and only the matching records from the left table. If there is no match in the left table,
-  the result shows NULL for the left table's columns.
-  All the rows on the right hand side table are included backfilled with NULL's and all the non-matching records from the left hand side table are dropped.
+  A SQL operation that retrieves all records from the right table and the matching records from the left table. If a row in the right table does not have a match in the
+  left table, the resulting columns from the left table will display NULL values.
   
 - **Full Join**
 
