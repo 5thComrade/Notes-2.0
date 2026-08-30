@@ -525,6 +525,8 @@ Take each row and assign it to a group based on its user_id.
 After grouping, the only column available for selection is the grouped column itself. If you try to access any other column, we'd see an error. We need aggregate functions to
 access other columns.
 
+We could use any columns post Grouping within the Aggregate Functions. If you group by user_id, then any other column ex: age is available for aggregate functions.
+
 #### Aggregate Functions
 
 - COUNT() - Returns the number of values in a group of values
