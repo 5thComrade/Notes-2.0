@@ -568,9 +568,17 @@ GROUP BY user_id;
 In the above query, we can't access id directly but we can use aggregate functions on id and get its value. The response of the above query is a table of 2 columns - unique user id's on the left and the number of comments each user created after the table is grouped into sub-groups.
 
 **When we do a COUNT on a column, the NULL values are not included - To fix it we can use COUNT(*)**
+**If you want to calculate the count of all the rows use the below query, cause if we but COUNT(id) and if id is NULL that row is omitted from the final count**
 
 ```sql
 SELECT COUNT(*) FROM photos;
 ```
 
+GROUP BY using JOINS
 
+```sql
+SELECT username, COUNT(*)
+FROM new_users AS users
+JOIN comments ON comments.user_id = users.id
+GROUP BY username;
+```
