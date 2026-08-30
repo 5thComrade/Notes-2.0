@@ -582,3 +582,18 @@ FROM new_users AS users
 JOIN comments ON comments.user_id = users.id
 GROUP BY username;
 ```
+
+#### Filtering Groups with Having
+
+Having is always associated with GROUP BY, you'll never see Having without a Group By
+
+Imagine you get asked this, find all the records in the comments table where the photo_id is greater than 3 and the total number of comments is equal to 20. Below query gives you exactly that
+
+```sql
+SELECT photo_id, COUNT(*)
+FROM comments
+WHERE photo_id > 3
+GROUP BY photo_id
+HAVING COUNT(*) = 20;
+```
+
