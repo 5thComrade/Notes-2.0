@@ -599,3 +599,59 @@ GROUP BY photo_id
 HAVING COUNT(*) = 20;
 ```
 
+#### Sorting in SQL
+
+```sql
+SELECT * FROM new_products
+ORDER BY price;
+```
+
+By default when we order by on a column, we go from the lowest value to highest value (Ascending order - ASC)
+
+If you want to order the sorting in descending order we use the keyword DESC
+
+```sql
+SELECT * FROM new_products
+ORDER BY price DESC;
+```
+
+We can sort on different types of values including strings and the column gets sorted Alphatebically.
+
+We can sort on multiple columns too.
+
+If for example we are sorting on the price column then we get 2 or more records with the price as 1. Then we could sort based on the weight column so even that is sorted. You will still see the 1 dollar products at the top of the ascending list but now its weight column will also be sorted in ascending order.
+
+```sql
+SELECT * FROM new_products
+ORDER BY price, weight;
+```
+
+#### OFFSET and LIMIT
+
+We use OFFSET keyword to skips rows of the result set
+
+We use LIMIT to only give n number of rows from the result set
+
+```sql
+SELECT * FROM new_users
+OFFSET 40
+```
+
+```sql
+SELECT * FROM new_users
+LIMIT 2
+OFFSET 40
+```
+
+In the above query we skip 40 rows and select the first 2 rows of remaining result set.
+
+```sql
+SELECT * FROM new_products
+ORDER BY price DESC
+LIMIT 2
+```
+
+Here we are find the 2 items that are most expensive.
+
+Where do we use OFFSET and LIMIT? In pagination - the first page API call LIMIT is 10 and OFFSET is 0, the second page API call LIMIT is 10 and OFFSET is 10 etc
+
