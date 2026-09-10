@@ -655,3 +655,93 @@ Here we are find the 2 items that are most expensive.
 
 Where do we use OFFSET and LIMIT? In pagination - the first page API call LIMIT is 10 and OFFSET is 0, the second page API call LIMIT is 10 and OFFSET is 10 etc
 
+## SET Operators
+
+#### UNION
+
+If you want to join the results of 2 or more queries then we use a the keyword UNION to combine the results of both the queries.
+
+```sql
+(
+   SELECT * 
+   FROM new_products
+   ORDER BY price DESC 
+   LIMIT 4
+)
+UNION
+(
+   SELECT * 
+   FROM new_products
+   ORDER BY price / weight DESC 
+   LIMIT 4
+);
+```
+
+If the UNION keyword sees an identical row from both the lists, it will only be shown once in the final result set.
+
+If you don't want it to skip the duplicates, we can instead use UNION ALL keyword
+
+```sql
+(
+ SELECT * 
+ FROM new_products
+ ORDER BY price DESC 
+ LIMIT 4
+)
+UNION ALL
+(
+ SELECT * 
+ FROM new_products
+ ORDER BY price / weight DESC 
+ LIMIT 4
+);
+```
+
+To use UNIONS the columns and its type must be the same on both the tables.
+
+#### All Set operators
+
+- UNION: Join together the results of of two queries and remove duplicate rows
+- UNION ALL: Join together results of two queries
+- INTERSECT: Find the rows common in the results of two queries. Remove duplicates.
+- INTERSECT ALL: Find the rows common in the results of two queries.
+- EXCEPT: Find the rows that are present in the first query but not second query. Remove duplicates. If a row from the left hand side is present in the right hand side it will get removed.
+- EXCEPT ALL: Find the rows that are present in the first query but not second query.
+
+```sql
+(
+   SELECT *
+   FROM new_products
+   ORDER BY price DESC 
+   LIMIT 4
+)
+INTERSECT
+(
+   SELECT *
+   FROM new_products
+   ORDER BY price / weight DESC 
+   LIMIT 4
+);
+```
+
+```sql
+(
+   SELECT *
+   FROM new_products
+   ORDER BY price DESC 
+   LIMIT 4
+)
+EXCEPT
+(
+   SELECT *
+   FROM new_products
+   ORDER BY price / weight DESC 
+   LIMIT 4
+);
+```
+
+In EXCEPT we only care for the results on the left hand side set, right hand side set can have tons of extra data and its all ignored.
+For UNION and INTERSECT flipping the tables from left to right has 0 impact on the result. That is not the case with EXCEPT, if we flip the result set changes.
+
+## Subqueries
+
