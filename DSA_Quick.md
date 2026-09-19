@@ -1,4 +1,4 @@
-# Frequency Counter Pattern
+# 1: Frequency Counter Pattern
 
 ## What is it?
 
@@ -275,3 +275,298 @@ Record<string, number>
 ```
 
 For DSA problems, `Map` is generally the cleaner default.
+
+---
+---
+
+# 2: Multiple Pointers Pattern
+
+## What is it?
+
+The **Multiple Pointers** pattern uses **two or more pointers** to move through a data structure, usually an **array or string**, instead of repeatedly searching through it.
+
+The pointers can move:
+
+* Toward each other
+* In the same direction
+* At different speeds
+* Based on some condition
+
+The goal is usually to solve a problem in **O(n)** time instead of **O(n²)**.
+
+---
+
+## When should I use it?
+
+Think **Multiple Pointers** when:
+
+* You have a **sorted array**
+* You need to find a **pair** that satisfies a condition
+* You need to compare values from different positions
+* You need to remove duplicates
+* You need to reverse or rearrange elements
+* You need to find something from **both ends**
+* You can eliminate part of the search space by moving a pointer
+
+### Common clues
+
+If you see:
+
+> "Given a sorted array, find two values..."
+
+Think:
+
+**Multiple Pointers.**
+
+If you see:
+
+> "Find a pair whose sum is..."
+
+Think:
+
+**Two pointers.**
+
+---
+
+# Example: Pair With Zero Sum
+
+### Problem
+
+Given a **sorted** array, find a pair whose sum is `0`.
+
+```text
+[-4, -3, -2, -1, 0, 1, 2, 5]
+
+          ↑           ↑
+        left         right
+```
+
+Start with pointers at both ends.
+
+```text
+left  = 0
+right = arr.length - 1
+```
+
+Calculate:
+
+```text
+arr[left] + arr[right]
+```
+
+Then:
+
+* If sum is `0` → found the pair
+* If sum is **greater than `0`** → move `right` left
+* If sum is **less than `0`** → move `left` right
+
+Why?
+
+Because the array is **sorted**.
+
+---
+
+## TypeScript
+
+```ts
+function sumZero(arr: number[]): [number, number] | undefined {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    const sum = arr[left] + arr[right];
+
+    if (sum === 0) {
+      return [arr[left], arr[right]];
+    }
+
+    if (sum > 0) {
+      right--;
+    } else {
+      left++;
+    }
+  }
+
+  return undefined;
+}
+
+console.log(sumZero([-4, -3, -2, -1, 0, 1, 2, 5]));
+// [-2, 2]
+```
+
+### Complexity
+
+```text
+Time:  O(n)
+Space: O(1)
+```
+
+Each pointer only moves forward through the array.
+
+---
+
+# Why is this better than a nested loop?
+
+### Brute force
+
+```ts
+for (let i = 0; i < arr.length; i++) {
+  for (let j = i + 1; j < arr.length; j++) {
+    // check pair
+  }
+}
+```
+
+```text
+Time: O(n²)
+```
+
+### Multiple pointers
+
+```ts
+let left = 0;
+let right = arr.length - 1;
+
+while (left < right) {
+  // ...
+}
+```
+
+```text
+Time: O(n)
+```
+
+The sorted nature of the array allows us to **eliminate many possibilities without checking them**.
+
+---
+
+# Example: Check for Palindrome
+
+Multiple pointers aren't limited to sorted arrays.
+
+A palindrome reads the same forwards and backwards.
+
+```text
+"racecar"
+
+r →       ← r
+ a →   ← a
+  c → ← c
+   e
+```
+
+Use one pointer at the beginning and one at the end.
+
+```ts
+function isPalindrome(str: string): boolean {
+  let left = 0;
+  let right = str.length - 1;
+
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false;
+    }
+
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+console.log(isPalindrome("racecar"));
+// true
+
+console.log(isPalindrome("hello"));
+// false
+```
+
+```text
+Time:  O(n)
+Space: O(1)
+```
+
+---
+
+# Same Direction Pointers
+
+Multiple pointers can also move in the **same direction**.
+
+A common example is removing duplicates from a sorted array.
+
+```text
+[1, 1, 2, 2, 3, 4]
+
+ ↑
+write
+
+ ↑
+read
+```
+
+One pointer tracks where the next unique value should go, while another scans the array.
+
+```ts
+function removeDuplicates(arr: number[]): number {
+  if (arr.length === 0) {
+    return 0;
+  }
+
+  let write = 1;
+
+  for (let read = 1; read < arr.length; read++) {
+    if (arr[read] !== arr[read - 1]) {
+      arr[write] = arr[read];
+      write++;
+    }
+  }
+
+  return write;
+}
+```
+
+---
+
+# Mental Model
+
+When you see a problem involving an array/string, ask:
+
+```text
+Can I place a pointer at the beginning?
+Can I place another pointer at the end?
+Can I move them based on a condition?
+```
+
+Or:
+
+```text
+Can I have one pointer read/scan
+while another pointer tracks a position?
+```
+
+If yes, **Multiple Pointers** may be the right pattern.
+
+---
+
+# Quick Decision Guide
+
+| Problem clue                        | Pattern           |
+| ----------------------------------- | ----------------- |
+| Count occurrences                   | Frequency Counter |
+| Sorted array + find a pair          | Multiple Pointers |
+| Compare beginning and end           | Multiple Pointers |
+| Palindrome                          | Multiple Pointers |
+| Remove duplicates from sorted array | Multiple Pointers |
+| Contiguous subarray / substring     | Sliding Window    |
+| Repeatedly count/search values      | Frequency Counter |
+
+---
+
+## Remember
+
+> **Multiple Pointers = use multiple indexes to intelligently traverse a data structure, eliminating unnecessary comparisons.**
+
+The biggest clue is often:
+
+> **"The input is sorted" + "find/compare a pair" → think Multiple Pointers.**
+
