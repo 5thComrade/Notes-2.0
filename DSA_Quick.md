@@ -570,3 +570,476 @@ The biggest clue is often:
 
 > **"The input is sorted" + "find/compare a pair" → think Multiple Pointers.**
 
+---
+---
+
+# 3: Sliding Window Pattern
+
+## What is it?
+
+The **Sliding Window** pattern is used to efficiently examine a **contiguous portion** of an array or string.
+
+Instead of repeatedly calculating the same values for overlapping subarrays/substrings, we maintain a **window** and move it through the input.
+
+Think:
+
+```text
+Array:   [2, 1, 5, 1, 3, 2]
+             └─────┘
+             window
+```
+
+The window "slides" from left to right.
+
+---
+
+## When should I use it?
+
+Think **Sliding Window** when the problem mentions:
+
+* **Contiguous** subarray
+* **Substring**
+* A range/window of elements
+* Maximum/minimum sum of `k` elements
+* Longest/shortest substring satisfying a condition
+* "At most `k`..."
+* "At least `k`..."
+* "Without repeating characters"
+* "Contains no more than..."
+
+### Common clues
+
+If you see:
+
+> "Find the maximum sum of a subarray of size `k`."
+
+Think:
+
+**Fixed Sliding Window.**
+
+If you see:
+
+> "Find the longest substring with..."
+
+Think:
+
+**Dynamic Sliding Window.**
+
+---
+
+# Two Types of Sliding Windows
+
+There are two common forms:
+
+```text
+1. Fixed Window
+2. Dynamic Window
+```
+
+---
+
+# 3.1. Fixed Sliding Window
+
+The window always has the same size.
+
+### Example
+
+Find the maximum sum of `k` consecutive elements.
+
+```text
+[2, 1, 5, 1, 3, 2]
+ └─────┘
+   k=3
+
+sum = 8
+```
+
+Then slide:
+
+```text
+[2, 1, 5, 1, 3, 2]
+    └─────┘
+     sum = 7
+```
+
+Instead of recalculating the entire window, we:
+
+```text
+Remove the element leaving the window
++
+Add the element entering the window
+```
+
+---
+
+## TypeScript
+
+```ts
+function maxSubarraySum(arr: number[], k: number): number | undefined {
+  if (arr.length < k) {
+    return undefined;
+  }
+
+  let windowSum = 0;
+
+  // Build the first window
+  for (let i = 0; i < k; i++) {
+    windowSum += arr[i];
+  }
+
+  let maxSum = windowSum;
+
+  // Slide the window
+  for (let i = k; i < arr.length; i++) {
+    windowSum += arr[i];
+    windowSum -= arr[i - k];
+
+    maxSum = Math.max(maxSum, windowSum);
+  }
+
+  return maxSum;
+}
+
+console.log(maxSubarraySum([2, 1, 5, 1, 3, 2], 3));
+// 9
+```
+
+The windows are:
+
+```text
+[2, 1, 5] → 8
+[1, 5, 1] → 7
+[5, 1, 3] → 9  ← maximum
+[1, 3, 2] → 6
+```
+
+### Complexity
+
+```text
+Time:  O(n)
+Space: O(1)
+```
+
+---
+
+# Why is this better than brute force?
+
+A brute-force solution might calculate every window from scratch:
+
+```ts
+for each window:
+    calculate its entire sum
+```
+
+That can result in **O(n × k)** time.
+
+Sliding Window reuses the previous calculation:
+
+```text
+Previous window:
+[2, 1, 5]
+   ↓
+remove 2
+add 1
+   ↓
+[1, 5, 1]
+```
+
+So every element is processed only a small number of times.
+
+```text
+O(n)
+```
+
+---
+
+# 3.2. Dynamic Sliding Window
+
+The window size **changes** depending on a condition.
+
+Usually you have:
+
+```text
+left  → start of window
+right → end of window
+```
+
+The `right` pointer expands the window.
+
+The `left` pointer shrinks it when the window violates the condition.
+
+---
+
+# Example: Longest Substring Without Repeating Characters
+
+### Problem
+
+Find the length of the longest substring without duplicate characters.
+
+```text
+"abcabcbb"
+
+"abc" → valid
+"bca" → valid
+"cab" → valid
+"abc" → valid
+```
+
+The answer is:
+
+```text
+3
+```
+
+We can maintain a window containing only unique characters.
+
+```text
+a b c a b c b b
+└─────┘
+ window
+```
+
+When we encounter a duplicate, move `left` until the window becomes valid again.
+
+---
+
+## TypeScript
+
+```ts
+function longestUniqueSubstring(str: string): number {
+  const seen = new Set<string>();
+
+  let left = 0;
+  let maxLength = 0;
+
+  for (let right = 0; right < str.length; right++) {
+    while (seen.has(str[right])) {
+      seen.delete(str[left]);
+      left++;
+    }
+
+    seen.add(str[right]);
+
+    maxLength = Math.max(
+      maxLength,
+      right - left + 1
+    );
+  }
+
+  return maxLength;
+}
+
+console.log(longestUniqueSubstring("abcabcbb"));
+// 3
+```
+
+### Complexity
+
+```text
+Time:  O(n)
+Space: O(n)
+```
+
+---
+
+# The Dynamic Window Mental Model
+
+Think of it like this:
+
+```text
+             right
+               ↓
+[a, b, c, d, e, f]
+ ↑
+left
+```
+
+### Expand
+
+Move `right` forward:
+
+```text
+[a, b, c]
+ ↑     ↑
+left  right
+```
+
+### Condition violated?
+
+Move `left` forward:
+
+```text
+[a, b, c, d]
+    ↑     ↑
+   left  right
+```
+
+Keep doing this until the window satisfies the condition again.
+
+---
+
+# Generic Dynamic Window Template
+
+A very useful template to remember:
+
+```ts
+let left = 0;
+
+for (let right = 0; right < arr.length; right++) {
+  // Add arr[right] to the window
+
+  while (/* window is invalid */) {
+    // Remove arr[left] from the window
+    left++;
+  }
+
+  // Window is valid here
+  // Update answer
+}
+```
+
+The important idea is:
+
+```text
+right → expand
+left  → shrink
+```
+
+---
+
+# Fixed vs Dynamic Window
+
+| Type    | Window size | Typical problem                        |
+| ------- | ----------- | -------------------------------------- |
+| Fixed   | Always `k`  | Maximum sum of `k` elements            |
+| Dynamic | Changes     | Longest substring satisfying condition |
+
+### Fixed
+
+```text
+[─────]
+  k
+   ↓
+slide →
+```
+
+### Dynamic
+
+```text
+[────────]
+ ↑      ↑
+left   right
+
+condition violated
+      ↓
+   [─────]
+    ↑   ↑
+   left right
+```
+
+---
+
+# How to Recognize Sliding Window
+
+Ask yourself:
+
+### 1. Is the problem about a contiguous section?
+
+```text
+subarray
+substring
+consecutive elements
+range
+```
+
+If yes → **Sliding Window may apply.**
+
+### 2. Is there a fixed size?
+
+```text
+"subarray of size k"
+"every window of k elements"
+```
+
+→ **Fixed Sliding Window**
+
+### 3. Does the window need to satisfy a condition?
+
+```text
+"longest substring without..."
+"smallest subarray whose sum..."
+"at most k distinct..."
+```
+
+→ **Dynamic Sliding Window**
+
+---
+
+# Sliding Window vs Multiple Pointers
+
+These patterns can look very similar because both often use `left` and `right`.
+
+The distinction is mainly **what the pointers represent**.
+
+### Multiple Pointers
+
+Usually focuses on **relationships between positions/elements**.
+
+```text
+[1, 2, 3, 4, 5, 6]
+ ↑              ↑
+left           right
+
+Find a pair...
+```
+
+### Sliding Window
+
+The pointers define a **contiguous range** that you are actively maintaining.
+
+```text
+[1, 2, 3, 4, 5, 6]
+    ↑        ↑
+   left    right
+
+Current window = [2, 3, 4, 5]
+```
+
+A useful rule:
+
+> **Contiguous range + optimize/validate that range → think Sliding Window.**
+
+---
+
+# Mental Model
+
+```text
+                Sliding Window
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+       Fixed                    Dynamic
+          │                       │
+       size = k             expand/shrink
+          │                       │
+    max sum of k            longest substring
+    consecutive items       without duplicates
+```
+
+## Remember
+
+> **Sliding Window = maintain a contiguous range and slide it through the input instead of recalculating overlapping ranges from scratch.**
+
+### Quick trigger
+
+```text
+Contiguous?
+   ↓
+Yes
+   ↓
+Fixed size? ── Yes ──→ Fixed Window
+   │
+   No
+   ↓
+Condition-based? ──→ Dynamic Window
+```
