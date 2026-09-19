@@ -1043,3 +1043,436 @@ Fixed size? ── Yes ──→ Fixed Window
    ↓
 Condition-based? ──→ Dynamic Window
 ```
+
+---
+---
+
+# 4: Divide and Conquer Pattern
+
+## What is it?
+
+The **Divide and Conquer** pattern solves a problem by:
+
+1. **Divide** the problem into smaller subproblems.
+2. **Conquer** those smaller problems, usually recursively.
+3. **Combine** their results to produce the final answer.
+
+Think:
+
+```text
+             Problem
+                │
+          ┌─────┴─────┐
+          ↓           ↓
+       Smaller     Smaller
+       Problem     Problem
+          │           │
+          ↓           ↓
+        Solve       Solve
+          │           │
+          └─────┬─────┘
+                ↓
+             Combine
+                ↓
+             Answer
+```
+
+The key idea is:
+
+> **Solve a large problem by solving smaller versions of the same problem.**
+
+---
+
+# When should I use it?
+
+Think **Divide and Conquer** when:
+
+* The problem can be broken into **independent smaller problems**
+* Those smaller problems are similar to the original problem
+* Solving each smaller problem helps solve the original
+* The input can naturally be split into sections
+* You can significantly reduce the search space at every step
+
+### Common clues
+
+If you see:
+
+> "Search for an element in a sorted array."
+
+Think:
+
+**Binary Search → Divide and Conquer**
+
+If you see:
+
+> "Sort this array efficiently."
+
+Think:
+
+**Merge Sort / Quick Sort → Divide and Conquer**
+
+If you see:
+
+> "Find something in one half or the other."
+
+Think:
+
+**Divide and Conquer**
+
+---
+
+# Example: Binary Search
+
+Binary Search is one of the simplest examples.
+
+### Problem
+
+Find a target value in a **sorted** array.
+
+```text
+[1, 3, 5, 7, 9, 11, 13]
+
+target = 9
+```
+
+Instead of checking every element:
+
+```text
+1 → 3 → 5 → 7 → 9
+```
+
+Look at the middle:
+
+```text
+[1, 3, 5, 7, 9, 11, 13]
+          ↑
+        middle
+```
+
+`7 < 9`, so we know the target must be on the **right**.
+
+We can completely discard the left half:
+
+```text
+[1, 3, 5, 7] | [9, 11, 13]
+                ↑
+             search here
+```
+
+Then repeat.
+
+---
+
+## TypeScript
+
+```ts
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    const middle = Math.floor((left + right) / 2);
+
+    if (arr[middle] === target) {
+      return middle;
+    }
+
+    if (arr[middle] < target) {
+      left = middle + 1;
+    } else {
+      right = middle - 1;
+    }
+  }
+
+  return -1;
+}
+
+console.log(binarySearch([1, 3, 5, 7, 9, 11, 13], 9));
+// 4
+```
+
+### Complexity
+
+```text
+Time:  O(log n)
+Space: O(1)
+```
+
+Every step cuts the search space roughly in half:
+
+```text
+n
+↓
+n / 2
+↓
+n / 4
+↓
+n / 8
+↓
+...
+↓
+1
+```
+
+That's why the time complexity is:
+
+```text
+O(log n)
+```
+
+---
+
+# Example: Merge Sort
+
+Merge Sort is a classic **Divide and Conquer** algorithm.
+
+Given:
+
+```text
+[8, 3, 5, 4, 7, 6, 1, 2]
+```
+
+### Divide
+
+Split the array:
+
+```text
+[8, 3, 5, 4]       [7, 6, 1, 2]
+```
+
+Split again:
+
+```text
+[8, 3] [5, 4]       [7, 6] [1, 2]
+```
+
+Continue until each array contains one element:
+
+```text
+[8] [3] [5] [4] [7] [6] [1] [2]
+```
+
+### Conquer + Combine
+
+Now merge the small arrays in sorted order:
+
+```text
+[3, 8] [4, 5]       [6, 7] [1, 2]
+```
+
+Then:
+
+```text
+[3, 4, 5, 8]       [1, 2, 6, 7]
+```
+
+Finally:
+
+```text
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+---
+
+## TypeScript
+
+```ts
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const middle = Math.floor(arr.length / 2);
+
+  const left = mergeSort(arr.slice(0, middle));
+  const right = mergeSort(arr.slice(middle));
+
+  return merge(left, right);
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  return [
+    ...result,
+    ...left.slice(i),
+    ...right.slice(j),
+  ];
+}
+
+console.log(mergeSort([8, 3, 5, 4, 7, 6, 1, 2]));
+// [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+### Complexity
+
+```text
+Time:  O(n log n)
+Space: O(n)
+```
+
+---
+
+# Divide and Conquer vs Recursion
+
+These are **not the same thing**.
+
+### Recursion
+
+A function calls itself.
+
+```ts
+function countdown(n: number): void {
+  if (n === 0) return;
+
+  console.log(n);
+  countdown(n - 1);
+}
+```
+
+This is recursion, but it isn't necessarily Divide and Conquer.
+
+### Divide and Conquer
+
+The problem is broken into **smaller independent subproblems**.
+
+```text
+             Problem
+             /     \
+        Problem   Problem
+          /          \
+      smaller      smaller
+```
+
+So:
+
+> **Divide and Conquer often uses recursion, but recursion does not necessarily mean Divide and Conquer.**
+
+---
+
+# Divide and Conquer vs Binary Search
+
+Binary Search is an **example** of Divide and Conquer, not a separate competing pattern.
+
+```text
+Divide and Conquer
+        │
+        ├── Binary Search
+        ├── Merge Sort
+        └── Quick Sort
+```
+
+---
+
+# How to Recognize It
+
+Ask these questions:
+
+### 1. Can I split the problem?
+
+```text
+Problem
+   ↓
+Problem A + Problem B
+```
+
+### 2. Are the smaller problems similar to the original?
+
+For example:
+
+```text
+Sort 8 elements
+   ↓
+Sort 4 elements + Sort 4 elements
+```
+
+### 3. Can I combine their results?
+
+```text
+Result A + Result B
+        ↓
+   Final result
+```
+
+If the answer to these is **yes**, consider **Divide and Conquer**.
+
+---
+
+# Mental Model
+
+```text
+                Original Problem
+                       │
+                 ┌─────┴─────┐
+                 ↓           ↓
+              Problem      Problem
+                 │           │
+            ┌────┴───┐   ┌───┴────┐
+            ↓        ↓   ↓        ↓
+          Small    Small Small   Small
+            │        │    │        │
+            └────┬───┘    └───┬────┘
+                 ↓             ↓
+               Solve         Solve
+                 └──────┬──────┘
+                        ↓
+                     Combine
+                        ↓
+                     Answer
+```
+
+---
+
+# Common DSA Problems
+
+When practicing, common Divide and Conquer examples include:
+
+* **Binary Search**
+* **Merge Sort**
+* **Quick Sort**
+* Finding an element in a sorted structure
+* Problems where each step eliminates a large portion of the search space
+
+---
+
+# Quick Comparison With Other Patterns
+
+| Pattern           | Main idea                   | Common clue          |
+| ----------------- | --------------------------- | -------------------- |
+| Frequency Counter | Count occurrences           | "How many times?"    |
+| Multiple Pointers | Move multiple indexes       | Sorted array / pairs |
+| Sliding Window    | Maintain a contiguous range | Subarray / substring |
+| Divide & Conquer  | Split into smaller problems | Search/sort/split    |
+
+---
+
+## Remember
+
+> **Divide and Conquer = break a problem into smaller versions of itself, solve those smaller problems, then combine their results.**
+
+### Quick trigger
+
+```text
+Can I divide the problem?
+        ↓
+Are the pieces similar?
+        ↓
+Can I solve them independently?
+        ↓
+Can I combine the results?
+        ↓
+Divide & Conquer
+```
