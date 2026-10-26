@@ -745,3 +745,55 @@ For UNION and INTERSECT flipping the tables from left to right has 0 impact on t
 
 ## Subqueries
 
+What if we get a question like this: List the name and price of all products that are more expensive than all the products in the Toys department.
+
+We need to find the most expensive item from the Toys department and then find the most expensive item in the products table which is greater than toys department item.
+
+We could technically find the most expensive item in the products table but that's not the point.
+
+Subquery is a way of taking one or more queries and merging them.
+
+We need to run two separate queries...but how do I use the answer from query 1 in query 2?
+
+```sql
+SELECT MAX(price)
+FROM new_products
+WHERE department = 'Toys';
+
+SELECT name, price
+FROM new_products
+WHERE price > [Whatever we get from the top query];
+```
+
+This is how we write subqeries
+
+```sql
+SELECT name, price
+FROM new_products
+WHERE price > (
+  SELECT MAX(price)
+  FROM new_products
+  WHERE department = 'Toys'
+);
+```
+
+When we get one row one column from a query we refer to that query as a Scalar Query
+
+```sql
+SELECT COUNT(*)
+FROM users;
+```
+
+The above query is a Scalar query.
+
+```sql
+SELECT name, price, (SELECT MAX(price) FROM new_products) AS max_price
+FROM new_products
+WHERE price > (
+  SELECT MAX(price)
+  FROM new_products
+  WHERE department = 'Toys'
+);
+```
+
+Another example of sub-query above.
