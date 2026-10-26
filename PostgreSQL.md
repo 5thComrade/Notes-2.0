@@ -796,4 +796,6 @@ WHERE price > (
 );
 ```
 
-Another example of sub-query above.
+Another example of sub-query above. **If a query returns a single value(scalar query) it can be used in a SELECT statement like above**
+
+
